@@ -20,6 +20,14 @@ public class OpeningDialog extends Dialog {
 	private Text txtRequirementsSourceFolder;
 	private Text textRestoreAcronyms;
 	private Text txtRemoveStopWords;
+	
+	public static boolean isTokenizing = false;
+	public static boolean isRestoringAcronyms = false;
+	public static boolean isRemovingStopWords = false;
+	public static boolean isStemming = false;
+	public static String rootFolderPath;
+	public static String restoringAcronymsFile;
+	public static String removingStopWordsFile;
 	/**
 	 * Create the dialog.
 	 * @param parent
@@ -74,7 +82,6 @@ public class OpeningDialog extends Dialog {
 				    txtRequirementsSourceFolder.setText(dialog.open());
 				}
 				catch(Exception e1){}
-
 			}
 		});
 		btnBrowse.setBounds(347, 8, 75, 25);
@@ -84,7 +91,13 @@ public class OpeningDialog extends Dialog {
 		Button btnTokenizing = new Button(shell, SWT.CHECK);
 		btnTokenizing.setBounds(10, 58, 93, 16);
 		btnTokenizing.setText("Tokenizing");
-		
+		btnTokenizing.addSelectionListener(new SelectionAdapter(){
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				isTokenizing = !isTokenizing;
+			}
+		});
+			
 		//restoring acronyms checkbox, browse, and input for file name
 		Button btnRestoringAcronyms = new Button(shell, SWT.CHECK);
 
@@ -113,6 +126,7 @@ public class OpeningDialog extends Dialog {
 		btnRestoringAcronyms.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
+				isRestoringAcronyms = !isRestoringAcronyms;
 				if(!btnRestoringAcronyms.getSelection()){
 					textRestoreAcronyms.setEnabled(false);
 					btnRestoreAcronyms.setEnabled(false);
@@ -156,6 +170,7 @@ public class OpeningDialog extends Dialog {
 		btnRemovingStopWords.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
+				isRemovingStopWords = !isRemovingStopWords;
 				if(!btnRemovingStopWords.getSelection()){
 					txtRemoveStopWords.setEnabled(false);
 					btnRemoveStopWords.setEnabled(false);
@@ -175,7 +190,14 @@ public class OpeningDialog extends Dialog {
 		Button btnStemming = new Button(shell, SWT.CHECK);
 		btnStemming.setBounds(10, 162, 93, 16);
 		btnStemming.setText("Stemming");
+		btnStemming.addSelectionListener(new SelectionAdapter(){
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				isStemming = !isStemming;
+			}
+		});
 		
+		//final submit
 		Button btnSubmit = new Button(shell, SWT.NONE);
 		btnSubmit.setBounds(301, 208, 75, 25);
 		btnSubmit.setText("Submit");
