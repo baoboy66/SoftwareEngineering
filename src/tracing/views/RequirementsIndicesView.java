@@ -17,13 +17,14 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.part.ViewPart;
+import org.eclipse.swt.widgets.*;
+import dialogView.OpeningDialog;
 
 public class RequirementsIndicesView extends ViewPart implements ISelectionProvider{
 	
-	private void showMessage(){
-		MessageDialog.openInformation(new Shell(),
-				"Testhello",
-				"Hello, Eclipse world");
+	private void showMessage(){	
+		OpeningDialog openDialog = new OpeningDialog(new Shell(), SWT.BORDER | SWT.WRAP);
+		openDialog.open();
 	}
 	
 	@Override
@@ -53,9 +54,9 @@ public class RequirementsIndicesView extends ViewPart implements ISelectionProvi
 
 	@Override
 	public void createPartControl(Composite parent) {
-		
+	
 		showMessage();
-		
+
 		//Set layout forum of parent composite
 		parent.setLayout(new FormLayout());
 		

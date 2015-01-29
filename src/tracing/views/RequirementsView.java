@@ -18,6 +18,8 @@ import org.eclipse.ui.*;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.SWT;
 
+import dialogView.OpeningDialog;
+
 
 /**
  * This sample class demonstrates how to plug-in a new
@@ -61,12 +63,12 @@ public class RequirementsView extends ViewPart implements ISelectionProvider{
 	public void createPartControl(Composite parent) {
 		//Set layout forum of parent composite
 		parent.setLayout(new FormLayout());
-		
 		//Create a drop box
 		comboViewer = new ComboViewer(parent,SWT.NONE|SWT.DROP_DOWN);
 		Combo combo = comboViewer.getCombo();
 		combo.add("Choose Use Case");
 		combo.add("UC0");
+		combo.add("UC1");
 		combo.select(0);
 		
 		//Set combo position
@@ -95,6 +97,8 @@ public class RequirementsView extends ViewPart implements ISelectionProvider{
 					text.setText("Indexing time of X requirement(s) is: Y seconds.");
 				else if(combo.getSelectionIndex()==1)
 					text.setText("This is a sample.");
+				else if(combo.getSelectionIndex()==2)
+					text.setText("UC1 testing!!!");
 				else
 					text.setText("");
 				
