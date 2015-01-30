@@ -10,7 +10,6 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.swt.widgets.FileDialog;
-
 import java.io.File;
 
 public class OpeningDialog extends Dialog {
@@ -204,11 +203,45 @@ public class OpeningDialog extends Dialog {
 		btnSubmit.addSelectionListener(new SelectionAdapter(){
 			@Override
 			public void widgetSelected(SelectionEvent e) {
+				boolean validInput = true;
 				rootFolderPath = txtRequirementsSourceFolder.getText() ;
-				restoringAcronymsFile = textRestoreAcronyms.getText();
-				removingStopWordsFile = txtRemoveStopWords.getText();
+				validInput = isValidInput(rootFolderPath);
+
+				if(isRestoringAcronyms){
+					restoringAcronymsFile = textRestoreAcronyms.getText();
+					if(!isValidInput(restoringAcronymsFile)){
+						System.out.println("invalid Input");
+					}
+				}
+				if(isRemovingStopWords){
+					removingStopWordsFile = txtRemoveStopWords.getText();
+					if(!isValidInput(removingStopWordsFile)){
+						System.out.println("invalid Input");
+					}
+				}
+				//shell.close();
 			}
 		});
 	}
 
+	/**
+	 * Check file/directory is empty
+	 */
+	 private boolean isValidInput(String path){
+		 File newPath = new File(path);
+		 if(newPath.isDirectory() && newPath.list().length > 0){
+			 for(int i = 0; i < newPath.list().length; i++)
+			 {
+				 if(newPath.list()[i].endsWith(".txt"))
+				 {
+					 return true;
+				 }
+			 }
+		 }
+		 else if(newPath.isFile()) {
+			if(newPath.getName().toLowerCase().endsWith(".txt"))
+				return true;
+		 }
+		 return false;
+	 }
 }
