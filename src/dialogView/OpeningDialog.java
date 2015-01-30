@@ -201,6 +201,14 @@ public class OpeningDialog extends Dialog {
 		Button btnSubmit = new Button(shell, SWT.NONE);
 		btnSubmit.setBounds(301, 208, 75, 25);
 		btnSubmit.setText("Submit");
+		btnSubmit.addSelectionListener(new SelectionAdapter(){
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				rootFolderPath = txtRequirementsSourceFolder.getText() ;
+				restoringAcronymsFile = textRestoreAcronyms.getText();
+				removingStopWordsFile = txtRemoveStopWords.getText();
+			}
+		});
 	}
 
 }
