@@ -1,9 +1,11 @@
 package tracing.views;
 
-
+import java.io.File;
+import java.util.ArrayList;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.part.*;
 import org.eclipse.jface.viewers.*;
 import org.eclipse.swt.events.SelectionEvent;
@@ -67,8 +69,14 @@ public class RequirementsView extends ViewPart implements ISelectionProvider{
 		comboViewer = new ComboViewer(parent,SWT.NONE|SWT.DROP_DOWN);
 		Combo combo = comboViewer.getCombo();
 		combo.add("Choose Use Case");
-		combo.add("UC0");
-		combo.add("UC1");
+		
+		// Call the findFileName method and assign the result to the combo viewer.
+        ArrayList<String> Test = findFileNames(OpeningDialog.rootFolderPath);
+        for(String itr: Test){
+            combo.add(itr);
+        }
+        
+        // Set the default to index 0 of the drop down.
 		combo.select(0);
 		
 		//Set combo position
@@ -155,4 +163,47 @@ public class RequirementsView extends ViewPart implements ISelectionProvider{
 		// TODO Auto-generated method stub
 		
 	}
+
+	/**
+	 * This function takes the filePath string parameter it is passed, ensures that the path
+	 * is valid and that it also exists. It then creates a string array of the directory's
+	 * contents, which are parsed with regex to ensure that only ".txt" files are added to
+	 * the array list that is returned to the calling function. 
+	 * 
+	 * @param filePath
+	 * @return ArrayList<String> directoryFilesMatched
+	 */
+    public static ArrayList<String> findFileNames(String filePath){
+
+        String directory = filePath;
+        String regexMatchCondition = ".+\\.txt$";
+        ArrayList<String> directoryFilesMatched = new ArrayList<String>();
+        File directoryObj =  new File(directory);
+        boolean validDirectory = directoryObj.exists();
+        validDirectory = directoryObj.isDirectory();
+
+        if (validDirectory){
+            String[] files = directoryObj.list();
+
+            for(String out : files){
+                //System.out.println(out);
+                if(out.matches(regexMatchCondition)){
+                    directoryFilesMatched.add(out.substring(0, out.lastIndexOf(".")).toUpperCase());
+                }
+                else{
+                    continue;
+                }
+            }
+        }
+        else{
+            //Pop-Up for invalid directory
+        	try{
+            MessageDialog.openInformation(new Shell(),
+                                          "Error",
+                                          "Invalid File Path, Try Again Please.");}
+        	catch(Exception exp){};
+        }
+
+        return directoryFilesMatched;
+    }
 }
