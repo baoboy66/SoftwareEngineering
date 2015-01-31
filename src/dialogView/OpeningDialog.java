@@ -1,4 +1,5 @@
 package dialogView;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Dialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
@@ -204,22 +205,33 @@ public class OpeningDialog extends Dialog {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				boolean validInput = true;
+				String error = "";
 				rootFolderPath = txtRequirementsSourceFolder.getText() ;
-				validInput = isValidInput(rootFolderPath);
-
+				if(!isValidInput(rootFolderPath)){
+					validInput = false;
+					error += "Requirements source folder: Incorrect path or folder has no text file \n";
+				}
 				if(isRestoringAcronyms){
 					restoringAcronymsFile = textRestoreAcronyms.getText();
 					if(!isValidInput(restoringAcronymsFile)){
-						System.out.println("invalid Input");
+						validInput = false;
+						error += "Restoring acronyms: incorrect file path or file is not a text file \n";
 					}
 				}
 				if(isRemovingStopWords){
 					removingStopWordsFile = txtRemoveStopWords.getText();
 					if(!isValidInput(removingStopWordsFile)){
-						System.out.println("invalid Input");
+						validInput = false;
+						error += "Removing stop words: incorrect file path or file is not a text file";
 					}
 				}
-				//shell.close();
+				if(validInput)
+				{
+					shell.close();
+				}
+				else{
+					MessageDialog.openInformation(new Shell(), "Invalid Inputs", error);
+				}
 			}
 		});
 	}
