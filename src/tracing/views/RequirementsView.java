@@ -1,7 +1,12 @@
 package tracing.views;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
+
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
@@ -71,11 +76,10 @@ public class RequirementsView extends ViewPart implements ISelectionProvider{
 		combo.add("Choose Use Case");
 		
 		// Call the findFileName method and assign the result to the combo viewer.
-        ArrayList<String> Test = findFileNames(OpeningDialog.rootFolderPath);
-        for(String itr: Test){
-            combo.add(itr);
+        ArrayList<String> directoryFiles = findFileNames(OpeningDialog.rootFolderPath);
+        for(String itr: directoryFiles){
+            combo.add(itr.toUpperCase());
         }
-        
         // Set the default to index 0 of the drop down.
 		combo.select(0);
 		
@@ -101,15 +105,27 @@ public class RequirementsView extends ViewPart implements ISelectionProvider{
 
 			@Override
 			public void widgetSelected(SelectionEvent e) {
+		        
 				if(combo.getSelectionIndex()==0)
 					text.setText("Indexing time of X requirement(s) is: Y seconds.");
-				else if(combo.getSelectionIndex()==1)
-					text.setText("This is a sample.");
-				else if(combo.getSelectionIndex()==2)
-					text.setText("UC1 testing!!!");
 				else
-					text.setText("");
-				
+					// Try to set the text panel to the raw contents of the selected text file.
+					// If the file is empty, unreadable, or there is an error we will default to
+					// a blank panel after catching the exception.
+					try{
+						text.setText("");
+						// The '-1' is needed in the call below becasue the first index of the dropdown
+						// is set by default causing an offset of 1.
+						ArrayList<String> fileStream = readSelectedFile(directoryFiles.get(combo.getSelectionIndex() - 1));
+						for(String line: fileStream){
+							// Newline character needed to ensure the proper display format.
+				            text.append(line + "\n");
+				        }
+					}
+					catch(Exception exp2){
+						// Set the text panel to blank when an exception is encountered.
+						text.setText("");
+					}
 			}
 
 			@Override
@@ -188,7 +204,7 @@ public class RequirementsView extends ViewPart implements ISelectionProvider{
             for(String out : files){
                 //System.out.println(out);
                 if(out.matches(regexMatchCondition)){
-                    directoryFilesMatched.add(out.substring(0, out.lastIndexOf(".")).toUpperCase());
+                    directoryFilesMatched.add(out.substring(0, out.lastIndexOf(".")));
                 }
                 else{
                     continue;
@@ -205,5 +221,37 @@ public class RequirementsView extends ViewPart implements ISelectionProvider{
         }
 
         return directoryFilesMatched;
+    }
+
+    /**
+     * This function takes the name of the file that is selected from the ComboViewer[Dropdown],
+     * adds the file path and extension to it in order to create a file object. Then the file is
+     * parsed using a Buffered Reader and FileReader in conjunction to store the lines of the file
+     * in the ArrayList that is returned.
+     * 
+     * @param filename
+     * @return fileContents: Array if successful
+     * 		   null: if exception is thrown
+     */
+    public static ArrayList<String> readSelectedFile(String filename){
+    	File openingDirectory = new File(OpeningDialog.rootFolderPath + "/" + filename + ".txt");
+    	ArrayList<String> fileContents = new ArrayList<String>();
+    	System.out.println(openingDirectory.toString());
+    	try {
+			BufferedReader fileStream = new BufferedReader(new FileReader(openingDirectory));
+		    String lineRead;
+		    while ((lineRead = fileStream.readLine()) != null)
+		    {
+		      fileContents.add(lineRead);
+		    }
+		    fileStream.close();
+	        for(String line: fileContents){
+	            System.out.println(line);
+	        }
+		    return fileContents;
+		} catch (Exception e) {
+			System.err.printf("File: %s is corrupted or empty.", filename);
+			return null;
+		}
     }
 }
