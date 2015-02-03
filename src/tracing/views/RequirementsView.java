@@ -259,9 +259,9 @@ public class RequirementsView extends ViewPart implements ISelectionProvider{
     }
     
     private String getIndexingString(long startTime, long finishTime, int fileCount){
-        String secondsPassed = Long.toString((finishTime-startTime)/1000);
+        String msecondsPassed = Long.toString((finishTime-startTime));
         String filesIndexed = Integer.toString(fileCount);
-        String indexTimeText = "Indexing time of " + filesIndexed + "(s) requirements is: " + secondsPassed + " seconds";
+        String indexTimeText = "Indexing time of " + filesIndexed + "(s) requirements is: " + msecondsPassed + " milliseconds";
     	return indexTimeText;
     }
 }
