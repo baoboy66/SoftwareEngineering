@@ -26,6 +26,7 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.SWT;
 
 import dialogView.OpeningDialog;
+import utility.Utility;
 
 
 /**
@@ -50,6 +51,7 @@ public class RequirementsView extends ViewPart implements ISelectionProvider{
 	
 	private ISelection selection;
 	private ComboViewer comboViewer;
+	public static ArrayList<String[]> results;
 	
 	/**
 	 * The ID of the view as specified by the extension.
@@ -74,18 +76,30 @@ public class RequirementsView extends ViewPart implements ISelectionProvider{
 		comboViewer = new ComboViewer(parent,SWT.NONE|SWT.DROP_DOWN);
 		Combo combo = comboViewer.getCombo();
 		combo.add("Choose Use Case");
-		
+		Utility UTL = new Utility(); 
 		
 		long startTime = System.currentTimeMillis();
 		
 		// Call the findFileName method and assign the result to the combo viewer.
-        ArrayList<String> directoryFiles = findFileNames(OpeningDialog.rootFolderPath);
+        ArrayList<String> directoryFiles = UTL.findFileNames(OpeningDialog.rootFolderPath);
+        String[] result;
         for(String itr: directoryFiles){
             combo.add(itr.toUpperCase());
+            if (OpeningDialog.isTokenizing) {
+            	result = UTL.tokenize(UTL.readSelectedFile(OpeningDialog.rootFolderPath,itr));
+            	
+            }
+        	if(OpeningDialog.isRestoringAcronyms){
+        		String[] tokens = UTL.tokenize(UTL.readSelectedFile(OpeningDialog.rootFolderPath,itr));
+        		result = UTL.restoreAcronyms(tokens, UTL.readSelectedFile(null, OpeningDialog.restoringAcronymsFile));
+        		for(String s : result){System.out.println(s+ " ");}
+        		System.out.println();
+        	}
+            //results.add(result);
         }
         
         long finishTime = System.currentTimeMillis();
-        getIndexingString(startTime,finishTime,directoryFiles.size());
+        UTL.getIndexingString(startTime,finishTime,directoryFiles.size());
 
         
         // Set the default to index 0 of the drop down.
@@ -107,7 +121,7 @@ public class RequirementsView extends ViewPart implements ISelectionProvider{
 		formdata.right = new FormAttachment(0,355);
 		text.setLayoutData(formdata);
 		//set text content
-		text.setText(getIndexingString(startTime,finishTime,directoryFiles.size()));
+		text.setText(UTL.getIndexingString(startTime,finishTime,directoryFiles.size()));
 		 
 		combo.addSelectionListener(new SelectionListener(){
 
@@ -115,7 +129,7 @@ public class RequirementsView extends ViewPart implements ISelectionProvider{
 			public void widgetSelected(SelectionEvent e) {
 		        
 				if(combo.getSelectionIndex()==0)
-					text.setText(getIndexingString(startTime,finishTime,directoryFiles.size()));
+					text.setText(UTL.getIndexingString(startTime,finishTime,directoryFiles.size()));
 				else
 					// Try to set the text panel to the raw contents of the selected text file.
 					// If the file is empty, unreadable, or there is an error we will default to
@@ -124,7 +138,7 @@ public class RequirementsView extends ViewPart implements ISelectionProvider{
 						text.setText("");
 						// The '-1' is needed in the call below becasue the first index of the dropdown
 						// is set by default causing an offset of 1.
-						ArrayList<String> fileStream = readSelectedFile(directoryFiles.get(combo.getSelectionIndex() - 1));
+						ArrayList<String> fileStream = UTL.readSelectedFile(OpeningDialog.rootFolderPath, directoryFiles.get(combo.getSelectionIndex() - 1));
 						for(String line: fileStream){
 							// Newline character needed to ensure the proper display format.
 				            text.append(line + "\n");
@@ -187,81 +201,4 @@ public class RequirementsView extends ViewPart implements ISelectionProvider{
 		// TODO Auto-generated method stub
 		
 	}
-
-	/**
-	 * This function takes the filePath string parameter it is passed, ensures that the path
-	 * is valid and that it also exists. It then creates a string array of the directory's
-	 * contents, which are parsed with regex to ensure that only ".txt" files are added to
-	 * the array list that is returned to the calling function. 
-	 * 
-	 * @param filePath
-	 * @return ArrayList<String> directoryFilesMatched
-	 */
-    public static ArrayList<String> findFileNames(String filePath){
-
-        String directory = filePath;
-        String regexMatchCondition = ".+\\.txt$";
-        ArrayList<String> directoryFilesMatched = new ArrayList<String>();
-        File directoryObj =  new File(directory);
-
-        if (directoryObj.exists() && directoryObj.isDirectory()){
-            String[] files = directoryObj.list();
-
-            for(String out : files){
-                //System.out.println(out);
-                if(out.matches(regexMatchCondition)){
-                    directoryFilesMatched.add(out.substring(0, out.lastIndexOf(".")));
-                }
-            }
-        }
-        else{
-            //Pop-Up for invalid directory
-        	try{
-            MessageDialog.openInformation(new Shell(),
-                                          "Error",
-                                          "Invalid File Path, Try Again Please.");}
-        	catch(Exception exp){};
-        }
-
-        return directoryFilesMatched;
-    }
-    
-    /**
-     * This function takes the name of the file that is selected from the ComboViewer[Dropdown],
-     * adds the file path and extension to it in order to create a file object. Then the file is
-     * parsed using a Buffered Reader and FileReader in conjunction to store the lines of the file
-     * in the ArrayList that is returned.
-     * 
-     * @param filename
-     * @return fileContents: Array if successful
-     * 		   null: if exception is thrown
-     */
-    public static ArrayList<String> readSelectedFile(String filename){
-    	File openingDirectory = new File(OpeningDialog.rootFolderPath + "/" + filename + ".txt");
-    	ArrayList<String> fileContents = new ArrayList<String>();
-    	System.out.println(openingDirectory.toString());
-    	try {
-			BufferedReader fileStream = new BufferedReader(new FileReader(openingDirectory));
-		    String lineRead;
-		    while ((lineRead = fileStream.readLine()) != null)
-		    {
-		      fileContents.add(lineRead);
-		    }
-		    fileStream.close();
-	        for(String line: fileContents){
-	            System.out.println(line);
-	        }
-		    return fileContents;
-		} catch (Exception e) {
-			System.err.printf("File: %s is corrupted or empty.", filename);
-			return null;
-		}
-    }
-    
-    private String getIndexingString(long startTime, long finishTime, int fileCount){
-        String msecondsPassed = Long.toString((finishTime-startTime));
-        String filesIndexed = Integer.toString(fileCount);
-        String indexTimeText = "Indexing time of " + filesIndexed + "(s) requirements is: " + msecondsPassed + " milliseconds";
-    	return indexTimeText;
-    }
 }
