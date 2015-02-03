@@ -203,19 +203,14 @@ public class RequirementsView extends ViewPart implements ISelectionProvider{
         String regexMatchCondition = ".+\\.txt$";
         ArrayList<String> directoryFilesMatched = new ArrayList<String>();
         File directoryObj =  new File(directory);
-        boolean validDirectory = directoryObj.exists();
-        validDirectory = directoryObj.isDirectory();
 
-        if (validDirectory){
+        if (directoryObj.exists() && directoryObj.isDirectory()){
             String[] files = directoryObj.list();
 
             for(String out : files){
                 //System.out.println(out);
                 if(out.matches(regexMatchCondition)){
                     directoryFilesMatched.add(out.substring(0, out.lastIndexOf(".")));
-                }
-                else{
-                    continue;
                 }
             }
         }
