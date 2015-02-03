@@ -75,11 +75,11 @@ public class RequirementsView extends ViewPart implements ISelectionProvider{
 		Combo combo = comboViewer.getCombo();
 		combo.add("Choose Use Case");
 		
+		
+		long startTime = System.currentTimeMillis();
+		
 		// Call the findFileName method and assign the result to the combo viewer.
         ArrayList<String> directoryFiles = findFileNames(OpeningDialog.rootFolderPath);
-        
-        long startTime = System.currentTimeMillis();
-        
         for(String itr: directoryFiles){
             combo.add(itr.toUpperCase());
         }
