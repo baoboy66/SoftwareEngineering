@@ -77,9 +77,17 @@ public class RequirementsView extends ViewPart implements ISelectionProvider{
 		
 		// Call the findFileName method and assign the result to the combo viewer.
         ArrayList<String> directoryFiles = findFileNames(OpeningDialog.rootFolderPath);
+        
+        long startTime = System.currentTimeMillis();
+        
         for(String itr: directoryFiles){
             combo.add(itr.toUpperCase());
         }
+        
+        long finishTime = System.currentTimeMillis();
+        getIndexingString(startTime,finishTime,directoryFiles.size());
+
+        
         // Set the default to index 0 of the drop down.
 		combo.select(0);
 		
@@ -99,15 +107,15 @@ public class RequirementsView extends ViewPart implements ISelectionProvider{
 		formdata.right = new FormAttachment(0,355);
 		text.setLayoutData(formdata);
 		//set text content
-		text.setText("Indexing time of X requirement(s) is: Y seconds.");
-		
+		text.setText(getIndexingString(startTime,finishTime,directoryFiles.size()));
+		 
 		combo.addSelectionListener(new SelectionListener(){
 
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 		        
 				if(combo.getSelectionIndex()==0)
-					text.setText("Indexing time of X requirement(s) is: Y seconds.");
+					text.setText(getIndexingString(startTime,finishTime,directoryFiles.size()));
 				else
 					// Try to set the text panel to the raw contents of the selected text file.
 					// If the file is empty, unreadable, or there is an error we will default to
@@ -222,7 +230,7 @@ public class RequirementsView extends ViewPart implements ISelectionProvider{
 
         return directoryFilesMatched;
     }
-
+    
     /**
      * This function takes the name of the file that is selected from the ComboViewer[Dropdown],
      * adds the file path and extension to it in order to create a file object. Then the file is
@@ -253,5 +261,12 @@ public class RequirementsView extends ViewPart implements ISelectionProvider{
 			System.err.printf("File: %s is corrupted or empty.", filename);
 			return null;
 		}
+    }
+    
+    private String getIndexingString(long startTime, long finishTime, int fileCount){
+        String secondsPassed = Long.toString((finishTime-startTime)/1000);
+        String filesIndexed = Integer.toString(fileCount);
+        String indexTimeText = "Indexing time of " + filesIndexed + "(s) requirements is: " + secondsPassed + " seconds";
+    	return indexTimeText;
     }
 }
