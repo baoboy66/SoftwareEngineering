@@ -84,6 +84,9 @@ public class Utility {
     
     public String convertArrayToString(String[] strings)
     {
+    	if(strings.length <= 0){
+    		return "";
+    	}
 		StringBuilder stringBuild = new StringBuilder();
 		stringBuild.append(strings[0]);
 		for(int i = 1; i < strings.length; i++){
@@ -112,12 +115,15 @@ public class Utility {
             return dictionary;
         } catch (Exception e) {
             System.err.printf("File: %s is corrupted or empty.", openingDirectory.getName());
-            return null;
+            return dictionary;
         }
     }
 
     public String restoringAcronyms(String data, String restoringAcronymsFile ){
     	HashMap<String,String>  dictionary = getAcronymsList(restoringAcronymsFile);
+    	if(dictionary.isEmpty()){
+    		return "";
+    	}
     	String[] words = data.split(" ");
     	for(String w : words){
     		if(dictionary.containsKey(w)){
