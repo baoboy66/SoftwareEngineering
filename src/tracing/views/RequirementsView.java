@@ -51,8 +51,6 @@ public class RequirementsView extends ViewPart implements ISelectionProvider{
 	
 	private ISelection selection;
 	private ComboViewer comboViewer;
-	public static ArrayList<String[]> results;
-	
 	/**
 	 * The ID of the view as specified by the extension.
 	 */
@@ -82,22 +80,18 @@ public class RequirementsView extends ViewPart implements ISelectionProvider{
 		
 		// Call the findFileName method and assign the result to the combo viewer.
         ArrayList<String> directoryFiles = UTL.findFileNames(OpeningDialog.rootFolderPath);
-        String[] result;
+        String result = "";
         for(String itr: directoryFiles){
-            combo.add(itr.toUpperCase());
+            combo.add(itr);
+            String file = UTL.readSelectedFile(OpeningDialog.rootFolderPath,itr);
             if (OpeningDialog.isTokenizing) {
-            	result = UTL.tokenize(UTL.readSelectedFile(OpeningDialog.rootFolderPath,itr));
-            	
+            	result = UTL.tokenize(file);	
             }
         	if(OpeningDialog.isRestoringAcronyms){
-        		String[] tokens = UTL.tokenize(UTL.readSelectedFile(OpeningDialog.rootFolderPath,itr));
-        		result = UTL.restoreAcronyms(tokens, UTL.readSelectedFile(null, OpeningDialog.restoringAcronymsFile));
-        		for(String s : result){System.out.println(s+ " ");}
-        		System.out.println();
-        	}
-            //results.add(result);
+        		String tokens = UTL.tokenize(file);     		
+        		result = UTL.restoringAcronyms(tokens, OpeningDialog.restoringAcronymsFile);
+        	} 
         }
-        
         long finishTime = System.currentTimeMillis();
         UTL.getIndexingString(startTime,finishTime,directoryFiles.size());
 
@@ -138,11 +132,8 @@ public class RequirementsView extends ViewPart implements ISelectionProvider{
 						text.setText("");
 						// The '-1' is needed in the call below becasue the first index of the dropdown
 						// is set by default causing an offset of 1.
-						ArrayList<String> fileStream = UTL.readSelectedFile(OpeningDialog.rootFolderPath, directoryFiles.get(combo.getSelectionIndex() - 1));
-						for(String line: fileStream){
-							// Newline character needed to ensure the proper display format.
-				            text.append(line + "\n");
-				        }
+						String fileStream = UTL.readSelectedFile(OpeningDialog.rootFolderPath, directoryFiles.get(combo.getSelectionIndex() - 1));
+						text.setText(fileStream);
 					}
 					catch(Exception exp2){
 						// Set the text panel to blank when an exception is encountered.

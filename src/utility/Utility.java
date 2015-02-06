@@ -4,14 +4,14 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Shell;
 
-public class Utility {
+import dialogView.OpeningDialog;
 
-	
-	
+public class Utility {
 
 	/**
 	 * This function takes the filePath string parameter it is passed, ensures that the path
@@ -22,9 +22,7 @@ public class Utility {
 	 * @param filePath
 	 * @return ArrayList<String> directoryFilesMatched
 	 */
-    public ArrayList<String> findFileNames(String filePath){
-
-        String directory = filePath;
+    public ArrayList<String> findFileNames(String directory){
         String regexMatchCondition = ".+\\.txt$";
         ArrayList<String> directoryFilesMatched = new ArrayList<String>();
         File directoryObj =  new File(directory);
@@ -33,7 +31,6 @@ public class Utility {
             String[] files = directoryObj.list();
 
             for(String out : files){
-                //System.out.println(out);
                 if(out.matches(regexMatchCondition)){
                     directoryFilesMatched.add(out.substring(0, out.lastIndexOf(".")));
                 }
@@ -61,62 +58,69 @@ public class Utility {
      * @return fileContents: Array if successful
      * 		   null: if exception is thrown
      */
-    public ArrayList<String> readSelectedFile(String filePath ,String filename){
-    	File openingDirectory = new File(filePath + "/" + filename + ".txt");
-    	if (filePath == null) {openingDirectory = new File(filename);}
-    	ArrayList<String> fileContents = new ArrayList<String>();
-    	try {
-			BufferedReader fileStream = new BufferedReader(new FileReader(openingDirectory));
-		    String lineRead;
-		    while ((lineRead = fileStream.readLine()) != null)
-		    {
-		      fileContents.add(lineRead);
-		    }
-		    fileStream.close();
-		    return fileContents;
-		} catch (Exception e) {
-			System.err.printf("File: %s is corrupted or empty.", filename);
-			return null;
-		}
+    public String readSelectedFile(String filePath ,String filename){
+        File openingDirectory = new File(filePath + "/" + filename + ".txt");
+        if (filePath == null) {openingDirectory = new File(filename);}
+        String fileContents = "";
+        try {
+                        BufferedReader fileStream = new BufferedReader(new FileReader(openingDirectory));
+                    int charRead;
+                    while ((charRead = fileStream.read()) != -1)
+                    {
+                      fileContents += (char)charRead;
+                    }
+                    fileStream.close();
+                    return fileContents;
+                } catch (Exception e) {
+                        System.err.printf("File: %s is corrupted or empty.", filename);
+                        return null;
+                }
     }
     
     public String getIndexingString(long startTime, long finishTime, int fileCount){
         String secondsPassed = Long.toString((finishTime-startTime)/1000);
-        String filesIndexed = Integer.toString(fileCount);
-        String indexTimeText = "Indexing time of " + filesIndexed + "(s) requirements is: " + secondsPassed + " seconds";
-    	return indexTimeText;
+        return "Indexing time of " + fileCount + " requirements is: " + secondsPassed + " seconds";
     }
     
-    public String[] tokenize(ArrayList<String> strList){
-		String originalStr = "";
-		for (String str : strList){
-			originalStr += (str + " ");
+    public String tokenize(String strList){
+		String[] tokens = strList.split("[^a-zA-Z0-9_/']+");
+		StringBuilder stringBuild = new StringBuilder();
+		stringBuild.append(tokens[0]);
+		for(int i = 1; i < tokens.length; i++){
+			stringBuild.append(" ");
+			stringBuild.append(tokens[i]);
 		}
-		//Splits string by all none alpha-numeric values, except underscores and apostrophes
-		String[] tokens = originalStr.split("[^a-zA-Z0-9_/']+");
-		return tokens;
+		return stringBuild.toString();
 	}
 	
-	
-	public String[] restoreAcronyms(String[] strings, ArrayList<String> acronyms){
-		for (int i=0 ; i < strings.length; i++) {
-			for (String acrLine : acronyms){
-				//Split the data at the colon character. Remove the trailing period as well
-				String[] acronymData = acrLine.split("[\\:\\.]");
-				//There should be 2 parts of the acronym data.
-				//If you have more than 2 it still runs but the data will be incorrect
-				if(!(acronymData.length < 2)){
-					if (strings[i].equals(acronymData[0].trim())){
-						strings[i] = acronymData[1].trim();
-					}
-				}
-				else{
-					//Problem parsing the data.
-					//This happens when a user does not format their acronym data correctly
-				}
-			}
-		}
-		return strings;
-	}
+    public HashMap<String,String> getAcronymsList(String filePath){
+    	HashMap<String, String> dictionary = new HashMap<String,String>();
+        File openingDirectory = new File(filePath);
+        try {
+            BufferedReader fileStream = new BufferedReader(new FileReader(openingDirectory));
+            String lineRead;
+            while ((lineRead = fileStream.readLine()) != null)
+            {
+            	String[] acronymData = lineRead.split("[\\:\\.]");
+            	dictionary.put(acronymData[0].trim(), acronymData[1].trim());
+            }
+            fileStream.close();
+            return dictionary;
+        } catch (Exception e) {
+            System.err.printf("File: %s is corrupted or empty.", openingDirectory.getName());
+            return null;
+        }
+    }
+
+    public String restoringAcronyms(String data, String restoringAcronymsFile ){
+    	HashMap<String,String>  dictionary = getAcronymsList(restoringAcronymsFile);
+    	String[] words = data.split(" ");
+    	for(String w : words){
+    		if(dictionary.containsKey(w)){
+    			data = data.replace(w, dictionary.get(w));
+    		}
+    	}
+    	return data;
+    }
 }
 
