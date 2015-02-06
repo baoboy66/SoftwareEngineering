@@ -88,8 +88,12 @@ public class RequirementsView extends ViewPart implements ISelectionProvider{
             	result = UTL.tokenize(file);	
             }
         	if(OpeningDialog.isRestoringAcronyms){
-        		String tokens = UTL.tokenize(file);     		
+        		String tokens = result.isEmpty() ? UTL.tokenize(file) : result;     		
         		result = UTL.restoringAcronyms(tokens, OpeningDialog.restoringAcronymsFile);
+        	} 
+        	if(OpeningDialog.isRemovingStopWords){
+        		String tokens = result.isEmpty() ? UTL.tokenize(file) : result;    		
+        		result = UTL.restoringAcronyms(tokens, OpeningDialog.removingStopWordsFile);
         	} 
         }
         long finishTime = System.currentTimeMillis();

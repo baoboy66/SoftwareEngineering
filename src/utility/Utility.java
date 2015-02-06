@@ -82,15 +82,19 @@ public class Utility {
         return "Indexing time of " + fileCount + " requirements is: " + secondsPassed + " seconds";
     }
     
-    public String tokenize(String strList){
-		String[] tokens = strList.split("[^a-zA-Z0-9_/']+");
+    public String convertArrayToString(String[] strings)
+    {
 		StringBuilder stringBuild = new StringBuilder();
-		stringBuild.append(tokens[0]);
-		for(int i = 1; i < tokens.length; i++){
+		stringBuild.append(strings[0]);
+		for(int i = 1; i < strings.length; i++){
 			stringBuild.append(" ");
-			stringBuild.append(tokens[i]);
+			stringBuild.append(strings[i]);
 		}
 		return stringBuild.toString();
+    }
+    public String tokenize(String strList){
+		String[] tokens = strList.split("[^a-zA-Z0-9_/']+");
+		return convertArrayToString(tokens);
 	}
 	
     public HashMap<String,String> getAcronymsList(String filePath){
@@ -122,5 +126,27 @@ public class Utility {
     	}
     	return data;
     }
+    
+    public String removeStopWords(String data, String filePath){
+    	String[] stopWords = tokenize(readSelectedFile(null, filePath)).split(" ");
+    	String[] strings = data.split(" ");
+    	ArrayList<String> result = new ArrayList<String>();
+        for (int i=0 ; i < strings.length; i++){
+            boolean notstopped = true;
+            for (int j=0; j< stopWords.length; j++){
+                if (strings[i].equals(stopWords[j])){
+                    notstopped = false;
+                    break;
+                }
+            }
+            if (notstopped){
+            	result.add(strings[i]);
+            }
+        }
+        String[] ResultAsArray = new String[result.size()];
+        result.toArray(ResultAsArray);
+        return convertArrayToString(ResultAsArray);
+    }
+
 }
 
