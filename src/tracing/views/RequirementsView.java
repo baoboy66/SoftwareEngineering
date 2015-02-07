@@ -51,6 +51,7 @@ public class RequirementsView extends ViewPart implements ISelectionProvider{
 	
 	private ISelection selection;
 	private ComboViewer comboViewer;
+	private ArrayList<String> displayString = new ArrayList<String>();
 	/**
 	 * The ID of the view as specified by the extension.
 	 */
@@ -80,21 +81,26 @@ public class RequirementsView extends ViewPart implements ISelectionProvider{
 		
 		// Call the findFileName method and assign the result to the combo viewer.
         ArrayList<String> directoryFiles = UTL.findFileNames(OpeningDialog.rootFolderPath);
-        String result = "";
+        
         for(String itr: directoryFiles){
+        	String result = "";
             combo.add(itr);
             String file = UTL.readSelectedFile(OpeningDialog.rootFolderPath,itr);
+            String tokens = UTL.tokenize(file);
             if (OpeningDialog.isTokenizing) {
-            	result = UTL.tokenize(file);	
+            	result = tokens;	
             }
-        	if(OpeningDialog.isRestoringAcronyms){
-        		String tokens = result.isEmpty() ? UTL.tokenize(file) : result;     		
+        	if(OpeningDialog.isRestoringAcronyms){       		
+        		tokens = result.isEmpty() ? tokens : result;     		
         		result = UTL.restoringAcronyms(tokens, OpeningDialog.restoringAcronymsFile);
         	} 
         	if(OpeningDialog.isRemovingStopWords){
-        		String tokens = result.isEmpty() ? UTL.tokenize(file) : result;    		
-        		result = UTL.restoringAcronyms(tokens, OpeningDialog.removingStopWordsFile);
+        		tokens = result.isEmpty() ? tokens : result;    		
+        		result = UTL.removeStopWords(tokens, OpeningDialog.removingStopWordsFile);
         	} 
+        	// print the original content if no feature is selected
+        	if(!(OpeningDialog.isRemovingStopWords || OpeningDialog.isRestoringAcronyms || OpeningDialog.isTokenizing)) result = file;
+        	displayString.add(result);
         }
         long finishTime = System.currentTimeMillis();
         UTL.getIndexingString(startTime,finishTime,directoryFiles.size());
@@ -136,8 +142,11 @@ public class RequirementsView extends ViewPart implements ISelectionProvider{
 						text.setText("");
 						// The '-1' is needed in the call below becasue the first index of the dropdown
 						// is set by default causing an offset of 1.
-						String fileStream = UTL.readSelectedFile(OpeningDialog.rootFolderPath, directoryFiles.get(combo.getSelectionIndex() - 1));
+						int index = combo.getSelectionIndex() - 1;
+						String fileStream = UTL.readSelectedFile(OpeningDialog.rootFolderPath, directoryFiles.get(index));
 						text.setText(fileStream);
+						System.out.println(displayString.get(index));
+						RequirementsIndicesView.indicesText.setText(displayString.get(index));
 					}
 					catch(Exception exp2){
 						// Set the text panel to blank when an exception is encountered.

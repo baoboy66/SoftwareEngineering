@@ -22,6 +22,7 @@ import dialogView.OpeningDialog;
 
 public class RequirementsIndicesView extends ViewPart implements ISelectionProvider{
 	
+	public static Text indicesText;
 	private void showMessage(){	
 		OpeningDialog openDialog = new OpeningDialog(new Shell(), SWT.BORDER | SWT.WRAP);
 		openDialog.open();
@@ -32,7 +33,7 @@ public class RequirementsIndicesView extends ViewPart implements ISelectionProvi
 		// TODO Auto-generated method stub
 		
 	}
-
+	
 	@Override
 	public ISelection getSelection() {
 		// TODO Auto-generated method stub
@@ -71,7 +72,7 @@ public class RequirementsIndicesView extends ViewPart implements ISelectionProvi
 		titleLabel.setLayoutData(formdata);
 		
 		//Create text area
-		Text indicesText = new Text(parent,SWT.MULTI|SWT.V_SCROLL|SWT.READ_ONLY);
+		indicesText = new Text(parent,SWT.MULTI|SWT.V_SCROLL|SWT.READ_ONLY);
 		indicesText.setText("This is a sample result.");
 		formdata = new FormData();
 		formdata.top = new FormAttachment(titleLabel,10);
@@ -79,7 +80,6 @@ public class RequirementsIndicesView extends ViewPart implements ISelectionProvi
 		formdata.left = new FormAttachment(0,10);
 		formdata.right = new FormAttachment(0,800);
 		indicesText.setLayoutData(formdata);
-		
 		
 		Button manageButton = new Button(parent,SWT.PUSH);
 		manageButton.setText("Manage...");
