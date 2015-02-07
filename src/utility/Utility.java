@@ -140,7 +140,7 @@ public class Utility {
         for (int i=0 ; i < strings.length; i++){
             boolean notstopped = true;
             for (int j=0; j< stopWords.length; j++){
-                if (strings[i].equals(stopWords[j])){
+                if ((strings[i].toLowerCase()).equals(stopWords[j].toLowerCase())){
                     notstopped = false;
                     break;
                 }
