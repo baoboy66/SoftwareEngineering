@@ -1,5 +1,7 @@
 package tracing.views;
 
+import java.util.ArrayList;
+
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -18,6 +20,7 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.swt.widgets.*;
+
 import dialogView.OpeningDialog;
 
 public class RequirementsIndicesView extends ViewPart implements ISelectionProvider{
@@ -92,6 +95,14 @@ public class RequirementsIndicesView extends ViewPart implements ISelectionProvi
 
 			@Override
 			public void widgetSelected(SelectionEvent e) {
+				OpeningDialog.isRemovingStopWords = false;
+				OpeningDialog.isRemovingStopWords = false;
+				OpeningDialog.isStemming = false;
+				OpeningDialog.isTokenizing = false;
+				indicesText.setText("");
+				RequirementsView.reqViewText.setText("");
+				RequirementsView.displayString = new ArrayList<String>();
+				RequirementsView.combo = RequirementsView.comboViewer.getCombo();
 				showMessage();
 				
 			}
