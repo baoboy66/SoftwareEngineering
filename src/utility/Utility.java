@@ -116,6 +116,7 @@ public class Utility {
      * @return
      */
     public String tokenize(String strList){
+    	strList = strList.trim();
 		String[] tokens = strList.split("[^a-zA-Z0-9_/']+");
 		return convertArrayToString(tokens);
 	}
@@ -208,7 +209,7 @@ public class Utility {
     public String getStems(String data){
     	String[] individualWords = data.split(" ");
     	Porter p = new Porter();
-    	if(individualWords.length <= 1 && individualWords[0].isEmpty()) return "";
+    	if(data.isEmpty() ||individualWords[0].isEmpty()) return "";
     	for(int i =0; i<individualWords.length; i++){
     		individualWords[i] = p.stripAffixes(individualWords[i]);
     	}	
