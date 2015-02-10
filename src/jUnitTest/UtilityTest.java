@@ -46,4 +46,30 @@ public class UtilityTest {
 		String expectedResult = "the best and most beauti thing in the world cannot be seen or even touch  thei must be felt with the heart";
 		assertEquals(expectedResult, utl.getStems(str));
 	}
+	
+	@Test
+	public void testReadSelectFile() {
+
+		File fileObj = new File("test.txt");
+		try {
+			fileObj.createNewFile();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		Writer writer = null;
+
+		try {
+		    writer = new BufferedWriter(new OutputStreamWriter(
+		          new FileOutputStream("test.txt"), "utf-8"));
+		    writer.write("Something to test LCHP +++ hopefully it passes!!![]]]}{");
+		} catch (IOException ex) {
+		  // report
+		} finally {
+		   try {writer.close();} catch (Exception ex) {}
+		}
+		String readTest = utl.readSelectedFile(".", "test");
+		assertEquals("Something to test LCHP +++ hopefully it passes!!![]]]}{", readTest);
+	}
 }
