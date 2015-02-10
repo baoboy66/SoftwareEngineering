@@ -1,8 +1,6 @@
 package utility;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -165,8 +163,21 @@ public class Utility {
     	String allStems = "";
     	allStems = convertArrayToString(individualWords);
     	return allStems;
-}
-
+    }
+    
+    public void storeStringIntoFiles(String rootFolder, String fileName, String data){
+    	File folder = new File(rootFolder + "\\Reqs_Indices");
+    	if (!folder.exists()) {
+    		folder.mkdir();
+    	}
+    	try{
+	    	FileWriter fw = new FileWriter(folder + "\\" + fileName + "_Indices.txt");
+	    		fw.write(data);
+	    	fw.close();
+    	}catch(IOException e){
+    		System.err.println(e);
+    	}
+    }
 
 }
 

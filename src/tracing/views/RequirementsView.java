@@ -105,6 +105,7 @@ public class RequirementsView extends ViewPart implements ISelectionProvider{
         	// print the original content if no feature is selected
         	if(!(OpeningDialog.isRemovingStopWords || OpeningDialog.isRestoringAcronyms || OpeningDialog.isTokenizing || OpeningDialog.isStemming)) result = file;
         	displayString.add(result);
+        	UTL.storeStringIntoFiles(OpeningDialog.rootFolderPath, itr, result);
         }
         long finishTime = System.currentTimeMillis();
         UTL.getIndexingString(startTime,finishTime,directoryFiles.size());
