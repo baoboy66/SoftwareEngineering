@@ -12,28 +12,37 @@ public class UtilityTest {
 	Utility utl = new Utility();
 	@Test
 	public void test() {
-
-		/*String folder = "C:\\Users\\User\\Desktop\\School\\test\\insidetest folder";
-		String file = utl.readSelectedFile(folder,"abc");
-		//System.out.println("result \n" + file);
-		
-		//String a = "this is a test!";
-		String b = utl.tokenize(file);
-		//System.out.println(b);
-		assertEquals("this is a test", b);
-		*/
-		//test getAcronymsList 
-		String acronymsList = "C:\\Users\\User\\Desktop\\School\\test\\insidetest folder\\Acronym_List.txt";
-		HashMap<String,String> hash = utl.getAcronymsList(acronymsList);
-		assertEquals("Emergency Responder", hash.get("ER"));
-		
-		String inputString = utl.tokenize("An admin creates a LHCP, an ER, a LT, or a PHA.");
-	    System.out.println(utl.restoringAcronyms(inputString, acronymsList));
 		
 	}
 	
-	public void testReadSelectFile() {
-
+	@Test
+	public void testGetIndexingString(){
+		long startTime = 0;
+		long endTime = 1000;
+		int fileCount = 5;
+		String result = utl.getIndexingString(startTime, endTime, fileCount);
+		String expectedResult = "Indexing time of 5 requirements is: 1000 milliseconds";
+		assertEquals(expectedResult, result);
 	}
-
+	
+	@Test
+	public void testConvertArrayToString() {
+		String[] arr = {"this", "is", "a", "test"};
+		String expectedResult = "this is a test";
+		assertEquals(expectedResult, utl.convertArrayToString(arr));
+	}
+	
+	@Test
+	public void testTokenize(){
+		String str = "'Test (a) != {b} and c > d";
+		String expectedResult = "'Test a b and c d";
+		assertEquals(expectedResult, utl.tokenize(str));
+	}
+	
+	@Test
+	public void testGetStems(){
+		String str = "The best and most beautiful things in the world cannot be seen or even touched - they must be felt with the heart.";
+		String expectedResult = "the best and most beauti thing in the world cannot be seen or even touch  thei must be felt with the heart";
+		System.out.println(utl.getStems(str));
+	}
 }

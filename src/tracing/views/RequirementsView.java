@@ -97,9 +97,13 @@ public class RequirementsView extends ViewPart implements ISelectionProvider{
         	if(OpeningDialog.isRemovingStopWords){
         		tokens = result.isEmpty() ? tokens : result;    		
         		result = UTL.removeStopWords(tokens, OpeningDialog.removingStopWordsFile);
-        	} 
+        	}
+        	if(OpeningDialog.isStemming){
+                tokens = result.isEmpty() ? tokens : result;
+               	result = UTL.getStems(tokens);
+        	}
         	// print the original content if no feature is selected
-        	if(!(OpeningDialog.isRemovingStopWords || OpeningDialog.isRestoringAcronyms || OpeningDialog.isTokenizing)) result = file;
+        	if(!(OpeningDialog.isRemovingStopWords || OpeningDialog.isRestoringAcronyms || OpeningDialog.isTokenizing || OpeningDialog.isStemming)) result = file;
         	displayString.add(result);
         }
         long finishTime = System.currentTimeMillis();
@@ -145,7 +149,6 @@ public class RequirementsView extends ViewPart implements ISelectionProvider{
 						int index = combo.getSelectionIndex() - 1;
 						String fileStream = UTL.readSelectedFile(OpeningDialog.rootFolderPath, directoryFiles.get(index));
 						text.setText(fileStream);
-						System.out.println(displayString.get(index));
 						RequirementsIndicesView.indicesText.setText(displayString.get(index));
 					}
 					catch(Exception exp2){

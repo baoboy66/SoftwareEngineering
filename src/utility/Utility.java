@@ -9,6 +9,7 @@ import java.util.HashMap;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Shell;
 
+import IRUtilities.Porter;
 import dialogView.OpeningDialog;
 
 public class Utility {
@@ -78,8 +79,8 @@ public class Utility {
     }
     
     public String getIndexingString(long startTime, long finishTime, int fileCount){
-        String secondsPassed = Long.toString((finishTime-startTime)/1000);
-        return "Indexing time of " + fileCount + " requirements is: " + secondsPassed + " seconds";
+        String secondsPassed = Long.toString((finishTime-startTime));
+        return "Indexing time of " + fileCount + " requirements is: " + secondsPassed + " milliseconds";
     }
     
     public String convertArrayToString(String[] strings)
@@ -153,6 +154,19 @@ public class Utility {
         result.toArray(ResultAsArray);
         return convertArrayToString(ResultAsArray);
     }
+    
+    public String getStems(String data){
+    	String[] individualWords = data.split(" ");
+    	Porter p = new Porter();
+    	if(individualWords.length <= 1 && individualWords[0].isEmpty()) return "";
+    	for(int i =0; i<individualWords.length; i++){
+    		individualWords[i] = p.stripAffixes(individualWords[i]);
+    	}	
+    	String allStems = "";
+    	allStems = convertArrayToString(individualWords);
+    	return allStems;
+}
+
 
 }
 
