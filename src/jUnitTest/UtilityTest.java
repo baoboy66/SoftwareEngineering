@@ -2,6 +2,7 @@ package jUnitTest;
 
 import static org.junit.Assert.*;
 
+import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import org.junit.Test;
@@ -43,6 +44,6 @@ public class UtilityTest {
 	public void testGetStems(){
 		String str = "The best and most beautiful things in the world cannot be seen or even touched - they must be felt with the heart.";
 		String expectedResult = "the best and most beauti thing in the world cannot be seen or even touch  thei must be felt with the heart";
-		System.out.println(utl.getStems(str));
+		assertEquals(expectedResult, utl.getStems(str));
 	}
 }
