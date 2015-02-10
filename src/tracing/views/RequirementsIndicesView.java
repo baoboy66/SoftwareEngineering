@@ -100,11 +100,12 @@ public class RequirementsIndicesView extends ViewPart implements ISelectionProvi
 				OpeningDialog.isStemming = false;
 				OpeningDialog.isTokenizing = false;
 				indicesText.setText("");
-				RequirementsView.reqViewText.setText("");
 				RequirementsView.displayString = new ArrayList<String>();
 				RequirementsView.combo = RequirementsView.comboViewer.getCombo();
+				RequirementsView.combo.removeAll();
 				showMessage();
-				
+				RequirementsView newView = new RequirementsView();
+				newView.runPlugIn();		
 			}
 
 			@Override

@@ -52,7 +52,8 @@ public class RequirementsView extends ViewPart implements ISelectionProvider{
 	private ISelection selection;
 	public static ComboViewer comboViewer;
 	public static Combo combo;
-	public static Text reqViewText;
+	public Utility UTL = new Utility(); 
+	public static Text text;
 	public static ArrayList<String> displayString = new ArrayList<String>();
 	/**
 	 * The ID of the view as specified by the extension.
@@ -63,27 +64,15 @@ public class RequirementsView extends ViewPart implements ISelectionProvider{
 	 * The constructor.
 	 */
 	public RequirementsView() {
+
 	}
 
-	/**
-	 * This is a callback that will allow us
-	 * to create the viewer and initialize it.
-	 */
-	@Override
-	public void createPartControl(Composite parent) {
-		//Set layout forum of parent composite
-		parent.setLayout(new FormLayout());
-		//Create a drop box
-		comboViewer = new ComboViewer(parent,SWT.NONE|SWT.DROP_DOWN);
-		Combo combo = comboViewer.getCombo();
+	public void runPlugIn(){
 		combo.add("Choose Use Case");
-		Utility UTL = new Utility(); 
-		
 		long startTime = System.currentTimeMillis();
 		
 		// Call the findFileName method and assign the result to the combo viewer.
         ArrayList<String> directoryFiles = UTL.findFileNames(OpeningDialog.rootFolderPath);
-        
         for(String itr: directoryFiles){
         	String result = "";
             combo.add(itr);
@@ -115,32 +104,16 @@ public class RequirementsView extends ViewPart implements ISelectionProvider{
         
         // Set the default to index 0 of the drop down.
 		combo.select(0);
-		
-		//Set combo position
-		FormData formdata = new FormData();
-		formdata.top=new FormAttachment(0,5);
-		formdata.left = new FormAttachment(0,10);
-		formdata.right = new FormAttachment(0,290);
-		combo.setLayoutData(formdata);
-		
-		//Set text position
-		Text text = new Text(parent,SWT.MULTI|SWT.V_SCROLL|SWT.READ_ONLY);
-		formdata = new FormData();
-		formdata.top=new FormAttachment(combo,10);
-		formdata.bottom = new FormAttachment(combo,600);
-		formdata.left = new FormAttachment(0,5);
-		formdata.right = new FormAttachment(0,355);
-		text.setLayoutData(formdata);
-		//set text content
 		text.setText(UTL.getIndexingString(startTime,finishTime,directoryFiles.size()));
-		 
 		combo.addSelectionListener(new SelectionListener(){
 
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 		        
-				if(combo.getSelectionIndex()==0)
+				if(combo.getSelectionIndex()==0){
 					text.setText(UTL.getIndexingString(startTime,finishTime,directoryFiles.size()));
+					RequirementsIndicesView.indicesText.setText("This is a sample result.");
+				}
 				else
 					// Try to set the text panel to the raw contents of the selected text file.
 					// If the file is empty, unreadable, or there is an error we will default to
@@ -149,7 +122,7 @@ public class RequirementsView extends ViewPart implements ISelectionProvider{
 						text.setText("");
 						// The '-1' is needed in the call below becasue the first index of the dropdown
 						// is set by default causing an offset of 1.
-						int index = combo.getSelectionIndex() - 1;
+						int index = combo.getSelectionIndex() -1;
 						String fileStream = UTL.readSelectedFile(OpeningDialog.rootFolderPath, directoryFiles.get(index));
 						text.setText(fileStream);
 						RequirementsIndicesView.indicesText.setText(displayString.get(index));
@@ -177,7 +150,36 @@ public class RequirementsView extends ViewPart implements ISelectionProvider{
 			}
 			
 		});
+	}
+	/**
+	 * This is a callback that will allow us
+	 * to create the viewer and initialize it.
+	 */
+	@Override
+	public void createPartControl(Composite parent) {
+		//Set layout forum of parent composite
+		parent.setLayout(new FormLayout());
+		//Create a drop box
+		comboViewer = new ComboViewer(parent,SWT.NONE|SWT.DROP_DOWN);
+		combo = comboViewer.getCombo();
+		text = new Text(parent,SWT.MULTI|SWT.V_SCROLL|SWT.READ_ONLY);
+		runPlugIn();
 		
+		//Set combo position
+		FormData formdata = new FormData();
+		formdata.top=new FormAttachment(0,5);
+		formdata.left = new FormAttachment(0,10);
+		formdata.right = new FormAttachment(0,290);
+		combo.setLayoutData(formdata);
+		
+		//Set text position
+		
+		formdata = new FormData();
+		formdata.top=new FormAttachment(combo,10);
+		formdata.bottom = new FormAttachment(combo,600);
+		formdata.left = new FormAttachment(0,5);
+		formdata.right = new FormAttachment(0,355);
+		text.setLayoutData(formdata);			
 	}
 	
 	@Override
