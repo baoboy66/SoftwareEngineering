@@ -48,6 +48,33 @@ public class UtilityTest {
 	}
 	
 	@Test
+	public void testRemoveStopWords(){
+		String originalString ="The big brown dog had a bone that was white ";
+		File fileObj = new File("stoptest.txt");
+		try {
+			fileObj.createNewFile();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		Writer writer = null;
+		try {
+		    writer = new BufferedWriter(new OutputStreamWriter(
+		          new FileOutputStream("stoptest.txt"), "utf-8"));
+		    writer.write("horse,potato,the,was,a,green,that");
+		} catch (IOException ex) {
+		  // report
+		} finally {
+		   try {writer.close();} catch (Exception ex) {}
+		}
+		String expectedResult = "big brown dog had bone white";
+		String result = utl.removeStopWords(originalString, "stoptest.txt");
+		assertEquals(expectedResult, result);
+		
+		
+	}
+	
+	@Test
 	public void testReadSelectFile() {
 
 		File fileObj = new File("test.txt");
