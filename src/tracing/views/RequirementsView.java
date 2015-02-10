@@ -50,8 +50,10 @@ import utility.Utility;
 public class RequirementsView extends ViewPart implements ISelectionProvider{
 	
 	private ISelection selection;
-	private ComboViewer comboViewer;
-	private ArrayList<String> displayString = new ArrayList<String>();
+	public static ComboViewer comboViewer;
+	public static Combo combo;
+	public static Text reqViewText;
+	public static ArrayList<String> displayString = new ArrayList<String>();
 	/**
 	 * The ID of the view as specified by the extension.
 	 */
