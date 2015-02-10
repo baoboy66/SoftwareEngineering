@@ -70,6 +70,7 @@ public class UtilityTest {
 		String expectedResult = "big brown dog had bone white";
 		String result = utl.removeStopWords(originalString, "stoptest.txt");
 		assertEquals(expectedResult, result);
+		fileObj.delete();
 		
 		
 	}
@@ -98,5 +99,6 @@ public class UtilityTest {
 		}
 		String readTest = utl.readSelectedFile(".", "test");
 		assertEquals("Something to test LCHP +++ hopefully it passes!!![]]]}{", readTest);
+		fileObj.delete();
 	}
 }

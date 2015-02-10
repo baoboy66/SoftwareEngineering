@@ -55,6 +55,7 @@ public class RequirementsView extends ViewPart implements ISelectionProvider{
 	public Utility UTL = new Utility(); 
 	public static Text text;
 	public static ArrayList<String> displayString = new ArrayList<String>();
+	public static boolean isView = false;
 	/**
 	 * The ID of the view as specified by the extension.
 	 */
@@ -68,6 +69,7 @@ public class RequirementsView extends ViewPart implements ISelectionProvider{
 	}
 
 	public void runPlugIn(){
+		combo.removeAll();
 		combo.add("Choose Use Case");
 		long startTime = System.currentTimeMillis();
 		
@@ -158,12 +160,13 @@ public class RequirementsView extends ViewPart implements ISelectionProvider{
 	@Override
 	public void createPartControl(Composite parent) {
 		//Set layout forum of parent composite
+		isView = true;
 		parent.setLayout(new FormLayout());
 		//Create a drop box
 		comboViewer = new ComboViewer(parent,SWT.NONE|SWT.DROP_DOWN);
 		combo = comboViewer.getCombo();
 		text = new Text(parent,SWT.MULTI|SWT.V_SCROLL|SWT.READ_ONLY);
-		runPlugIn();
+		if( !OpeningDialog.rootFolderPath.isEmpty()) runPlugIn();
 		
 		//Set combo position
 		FormData formdata = new FormData();

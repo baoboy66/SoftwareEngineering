@@ -95,14 +95,12 @@ public class RequirementsIndicesView extends ViewPart implements ISelectionProvi
 
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				OpeningDialog.isRemovingStopWords = false;
+				OpeningDialog.isRestoringAcronyms = false;
 				OpeningDialog.isRemovingStopWords = false;
 				OpeningDialog.isStemming = false;
 				OpeningDialog.isTokenizing = false;
 				indicesText.setText("");
 				RequirementsView.displayString = new ArrayList<String>();
-				RequirementsView.combo = RequirementsView.comboViewer.getCombo();
-				RequirementsView.combo.removeAll();
 				showMessage();
 				RequirementsView newView = new RequirementsView();
 				newView.runPlugIn();		

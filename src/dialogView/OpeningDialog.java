@@ -11,6 +11,9 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.swt.widgets.FileDialog;
+
+import tracing.views.RequirementsView;
+
 import java.io.File;
 
 public class OpeningDialog extends Dialog {
@@ -25,7 +28,7 @@ public class OpeningDialog extends Dialog {
 	public static boolean isRestoringAcronyms = false;
 	public static boolean isRemovingStopWords = false;
 	public static boolean isStemming = false;
-	public static String rootFolderPath;
+	public static String rootFolderPath = "";
 	public static String restoringAcronymsFile;
 	public static String removingStopWordsFile;
 	/**
@@ -228,6 +231,10 @@ public class OpeningDialog extends Dialog {
 				if(validInput)
 				{
 					shell.close();
+					if(RequirementsView.isView){
+						RequirementsView newView = new RequirementsView();
+						newView.runPlugIn();
+					}
 				}
 				else{
 					MessageDialog.openInformation(new Shell(), "Invalid Inputs", error);
