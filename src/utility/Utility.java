@@ -75,12 +75,26 @@ public class Utility {
                         return null;
                 }
     }
-    
+    /***
+     * This function takes in the time when the program starts, the time when the program finishes,
+     * and the number of files indexed and calculates the time it took, in milliseconds, and 
+     * returns it for the combo viewer to display. 
+     * @param startTime
+     * @param finishTime
+     * @param fileCount
+     * @return
+     */
     public String getIndexingString(long startTime, long finishTime, int fileCount){
         String secondsPassed = Long.toString((finishTime-startTime));
         return "Indexing time of " + fileCount + " requirements is: " + secondsPassed + " milliseconds";
     }
-    
+    /***
+     * This function takes in an array of Strings and concatenates them with a space inbetween
+     * each word to create a single string. This concatenated string is then returned. If there
+     * are no strings in the array, a empty string is returned. 
+     * @param strings
+     * @return
+     */
     public String convertArrayToString(String[] strings)
     {
     	if(strings.length <= 0){
@@ -94,11 +108,25 @@ public class Utility {
 		}
 		return stringBuild.toString();
     }
+    
+    /***
+     * This function takes a string and breaks it into a words as at every character that is not
+     * in the .split() list. 
+     * @param strList
+     * @return
+     */
     public String tokenize(String strList){
 		String[] tokens = strList.split("[^a-zA-Z0-9_/']+");
 		return convertArrayToString(tokens);
 	}
 	
+    /***
+     * This function takes in a file and splits each line into an acronym and the words that it stand
+     * for based on the delimiter of a colon. It returns a HashMap where the first string is the acronym 
+     * and the second string is the expanded words. 
+     * @param filePath
+     * @return
+     */
     public HashMap<String,String> getAcronymsList(String filePath){
     	HashMap<String, String> dictionary = new HashMap<String,String>();
         File openingDirectory = new File(filePath);
@@ -118,6 +146,15 @@ public class Utility {
         }
     }
 
+    /***
+     * This function takes in two strings, the first contains the information to be parsed, and 
+     * the second is file of the acronyms. It then creates a HashMap of the acronym data and runs
+     * through each word in the inputed string and checks if it matches any of the keys in the
+     * hashMap. It then replaces them with the expanded acronym.
+     * @param data
+     * @param restoringAcronymsFile
+     * @return
+     */
     public String restoringAcronyms(String data, String restoringAcronymsFile ){
     	HashMap<String,String>  dictionary = getAcronymsList(restoringAcronymsFile);
     	if(dictionary.isEmpty()){
@@ -131,7 +168,15 @@ public class Utility {
     	}
     	return data;
     }
-    
+    /***
+     * This function takes a String of data and the path of a file that contains the words to
+     * be taken out. It breaks both strings into tokens and compares each token in the inputted string 
+     * to make sure it is not in the list of words to be removed. If it is not to be removed, it gets 
+     * appended to a new string, which is then returned. 
+     * @param data
+     * @param filePath
+     * @return
+     */
     public String removeStopWords(String data, String filePath){
     	String[] stopWords = tokenize(readSelectedFile(null, filePath)).split(" ");
     	String[] strings = data.split(" ");
@@ -153,6 +198,13 @@ public class Utility {
         return convertArrayToString(ResultAsArray);
     }
     
+    /***
+     * This function takes in a string of information and breaks the string into words. It
+     * then takes each word in the array of words and removes the affixes from the end of
+     * the words. 
+     * @param data
+     * @return
+     */
     public String getStems(String data){
     	String[] individualWords = data.split(" ");
     	Porter p = new Porter();
