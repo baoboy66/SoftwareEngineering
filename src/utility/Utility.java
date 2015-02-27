@@ -5,8 +5,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 
+import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.dialogs.IOverwriteQuery;
+import org.eclipse.ui.wizards.datatransfer.FileSystemStructureProvider;
+import org.eclipse.ui.wizards.datatransfer.ImportOperation;
 
 import IRUtilities.Porter;
 import dialogView.OpeningDialog;
@@ -248,6 +253,22 @@ public class Utility {
     	}catch(IOException e){
     		System.err.println(e);
     	}
+    }
+    
+    public void openProject(){
+    	IOverwriteQuery overwriteQuery = new IOverwriteQuery() {
+            public String queryOverwrite(String file) { return ALL; }
+	    };
+	
+	    String baseDir = "C:\\iTrust";
+	    Path path = new Path(baseDir);
+	    ImportOperation importOperation = new ImportOperation(path,
+	            new File(baseDir), FileSystemStructureProvider.INSTANCE, overwriteQuery);
+	    importOperation.setCreateContainerStructure(false);
+	    try{
+	    importOperation.run(new NullProgressMonitor());
+	    }
+	    catch(Exception exp){};
     }
 
 }

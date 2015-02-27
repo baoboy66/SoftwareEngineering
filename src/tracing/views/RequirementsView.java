@@ -152,6 +152,8 @@ public class RequirementsView extends ViewPart implements ISelectionProvider{
 			}
 			
 		});
+		
+		UTL.openProject();
 	}
 	/**
 	 * This is a callback that will allow us
