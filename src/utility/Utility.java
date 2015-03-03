@@ -4,6 +4,7 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
@@ -143,7 +144,93 @@ public class Utility {
 		String[] tokens = strList.split("[^a-zA-Z0-9_/']+");
 		return convertArrayToString(tokens);
 	}
+    
+    /***
+     * This function takes a string and breaks it into a words as at every character that is not
+     * in the .split() list. This also splits the words by camel case.
+     * @param strList
+     * @return
+     */
+    public String tokenizeCode(String strList){
+    	//Split by spaces and non alpha numeric characters
+    	strList = strList.trim();
+		String[] tokens = strList.split("[^a-zA-Z0-9]+");
+		//Split by camel case
+		strList = convertArrayToString(tokens);
+		tokens = strList.split("(?<=[a-z])(?=[A-Z])|(?<=[A-Z])(?=[A-Z][a-z])");
+		//Return all tokens as string
+		return convertArrayToString(tokens);
+	}
 	
+    
+	public String processCode(String originalCode){
+		originalCode = originalCode.trim();
+		int codeLength = originalCode.length();
+		String newline = "\n";
+		List<String> codeSegments = new ArrayList<String>();
+		
+		int position = 0;
+		while(true){
+			int singlePosition = originalCode.indexOf("//", position);
+			int multiPosition = originalCode.indexOf("/*", position);
+			int commentPosition = -1;
+			String endCommentString = "";
+			
+			if(singlePosition != -1 && (singlePosition < multiPosition || multiPosition == -1)){
+				//A single line comment is being processed
+				commentPosition = singlePosition;
+				endCommentString = newline;
+			}
+			else if(multiPosition != -1 && (multiPosition < singlePosition  || singlePosition == -1)){
+				//A multi line comment is being processed
+				commentPosition = multiPosition;
+				endCommentString = "*/";
+			}
+			else{
+				//No comments found
+				codeSegments.add(tokenizeCode(originalCode.substring(position)));
+				break;
+			}
+			
+			//Check to see if comment is within quotes
+			int countDouble = 0;
+			int countSingle = 0;
+			for(int i =0; i < originalCode.substring(0, commentPosition).length(); i++){
+			    if(originalCode.charAt(i) == '"')
+			    	countDouble++;
+			    if(originalCode.charAt(i) == '\'')
+			    	countSingle++;
+			}
+			if(countDouble % 2 != 0 || countSingle % 2 != 0){
+				position = commentPosition + 2;
+				//Comments within quotes are not actually comments
+				continue;
+			}
+			
+			//Tokenize words before the comment starts
+			codeSegments.add(tokenizeCode(originalCode.substring(position, commentPosition)));
+			position = commentPosition;
+			
+			//Ignore everything within a comment
+			int endOfComment = originalCode.indexOf(endCommentString, position);
+			if(endOfComment == -1){
+				//The rest of the file is a comment
+				codeSegments.add(originalCode.substring(position));
+				break;
+			}
+			codeSegments.add(originalCode.substring(position, endOfComment + 2));
+			position = endOfComment;
+			
+			if(position >= codeLength){
+				break;
+			}
+		}
+		
+		String[] stringArray = codeSegments.toArray(new String[codeSegments.size()]);
+		return convertArrayToString(stringArray);
+	}
+    
+    
     /***
      * This function takes in a file and splits each line into an acronym and the words that it stand
      * for based on the delimiter of a colon. It returns a HashMap where the first string is the acronym 
