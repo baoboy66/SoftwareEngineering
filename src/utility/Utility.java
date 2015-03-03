@@ -167,16 +167,14 @@ public class Utility {
      * @param strList
      * @return processed code
      */
-	public String processCode(String originalCode){
+    public String processCode(String originalCode){
 		originalCode = originalCode.trim();
-		int codeLength = originalCode.length();
 		String newline = "\n";
 		List<String> codeSegments = new ArrayList<String>();
 		
-		int position = 0;
 		while(true){
-			int singlePosition = originalCode.indexOf("//", position);
-			int multiPosition = originalCode.indexOf("/*", position);
+			int singlePosition = originalCode.indexOf("//", 0);
+			int multiPosition = originalCode.indexOf("/*", 0);
 			int commentPosition = -1;
 			String endCommentString = "";
 			
@@ -192,7 +190,7 @@ public class Utility {
 			}
 			else{
 				//No comments found
-				codeSegments.add(tokenizeCode(originalCode.substring(position)));
+				codeSegments.add(tokenizeCode(originalCode.substring(0)));
 				break;
 			}
 			
@@ -203,27 +201,28 @@ public class Utility {
 			    	countDouble++;
 			}
 			if(countDouble % 2 != 0){
-				codeSegments.add(tokenizeCode(originalCode.substring(position, commentPosition)));
-				position = commentPosition + 2;
+				codeSegments.add(tokenizeCode(originalCode.substring(0, commentPosition)));
+				originalCode = originalCode.substring(commentPosition + 2);
+				
 				//Comments within quotes are not actually comments
 				continue;
 			}
 			
 			//Tokenize words before the comment starts
-			codeSegments.add(tokenizeCode(originalCode.substring(position, commentPosition)));
-			position = commentPosition;
+			codeSegments.add(tokenizeCode(originalCode.substring(0, commentPosition)));
+			originalCode = originalCode.substring(commentPosition);
 			
 			//Ignore everything within a comment
-			int endOfComment = originalCode.indexOf(endCommentString, position);
+			int endOfComment = originalCode.indexOf(endCommentString, 0);
 			if(endOfComment == -1){
 				//The rest of the file is a comment
-				codeSegments.add(originalCode.substring(position));
+				codeSegments.add(originalCode.substring(0));
 				break;
 			}
-			codeSegments.add(originalCode.substring(position, endOfComment + 2));
-			position = endOfComment;
+			codeSegments.add(originalCode.substring(0, endOfComment + 2));
+			originalCode = originalCode.substring(endOfComment + 2);
 			
-			if(position >= codeLength){
+			if(originalCode.length() <= 0){
 				break;
 			}
 		}
