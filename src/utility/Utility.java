@@ -149,7 +149,7 @@ public class Utility {
      * This function takes a string and breaks it into a words as at every character that is not
      * in the .split() list. This also splits the words by camel case.
      * @param strList
-     * @return
+     * @return tokens as string
      */
     public String tokenizeCode(String strList){
     	//Split by spaces and non alpha numeric characters
@@ -162,7 +162,11 @@ public class Utility {
 		return convertArrayToString(tokens);
 	}
 	
-    
+    /***
+     * This function takes astring of code, ignores the comments and tokenizes the rest
+     * @param strList
+     * @return processed code
+     */
 	public String processCode(String originalCode){
 		originalCode = originalCode.trim();
 		int codeLength = originalCode.length();
@@ -194,14 +198,12 @@ public class Utility {
 			
 			//Check to see if comment is within quotes
 			int countDouble = 0;
-			int countSingle = 0;
 			for(int i =0; i < originalCode.substring(0, commentPosition).length(); i++){
 			    if(originalCode.charAt(i) == '"')
 			    	countDouble++;
-			    if(originalCode.charAt(i) == '\'')
-			    	countSingle++;
 			}
-			if(countDouble % 2 != 0 || countSingle % 2 != 0){
+			if(countDouble % 2 != 0){
+				codeSegments.add(tokenizeCode(originalCode.substring(position, commentPosition)));
 				position = commentPosition + 2;
 				//Comments within quotes are not actually comments
 				continue;
