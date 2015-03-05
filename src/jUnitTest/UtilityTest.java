@@ -101,4 +101,55 @@ public class UtilityTest {
 		assertEquals("Something to test LCHP +++ hopefully it passes!!![]]]}{", readTest);
 		fileObj.delete();
 	}
+	
+    @Test
+    public void testTokenizeCode() {
+            String a = "this is a test $100.00 + $200 = $300 % 3 = 0 label this @s ^100";
+            String expected = "this is a test 100 00 200 300 3 0 label this s 100";
+            String actual = utl.tokenizeCode(a);
+            assertEquals(expected, actual);
+    }
+   
+    @Test
+    public void testCamelCaseTokenizeCode2() {
+            String a = "CamelCase Test This is a MethodToTest(String myString)";
+            String expected = "Camel Case Test This is a Method To Test String my String";
+            String actual = utl.tokenizeCode(a);
+            assertEquals(expected, actual);
+    }
+   
+    @Test
+    public void testCamelCaseTokenizeCode3() {
+            String a = "DBException";
+            String expected = "DB Exception";
+            String actual = utl.tokenizeCode(a);
+            assertEquals(expected, actual);
+    }
+   
+    @Test
+    public void testUnderScoreTokenizeCode4() {
+            String a = "DB_Exception";
+            String expected = "DBException";
+            String actual = utl.tokenizeCode(a);
+            assertEquals(expected, actual);
+    }
+   
+    @Test
+    public void testProcessCode() {
+            String a = "CamelCase Test This is a MethodToTest(String myString)";
+            String expected = "Camel Case Test This is a Method To Test String my String";
+            String actual = utl.processCode(a);
+            assertEquals(expected, actual);
+    }
+   
+    @Test
+    public void testProcessCode3() {
+            //String a = utl.readSelectedFile("C:/Users/User/workspace/Lab2_SE/src/utility/Utility.java", null);
+            String a = utl.readSelectedFile(null, "/Users/lxdavidxl/Downloads/iTrust/src/edu/ncsu/csc/itrust/EmailUtil.java");
+            String expected = "/*test this*/";
+            String actual = utl.processCode(a);
+            System.out.println("Expected: " +expected);
+            System.out.println("Actual: " +actual);
+            //assertEquals(expected, actual);
+    }
 }
