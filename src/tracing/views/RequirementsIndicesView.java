@@ -1,7 +1,9 @@
 package tracing.views;
 
 import java.util.ArrayList;
+import java.util.jar.JarException;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -21,6 +23,7 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.swt.widgets.*;
 
+import utility.Utility;
 import dialogView.OpeningDialog;
 
 public class RequirementsIndicesView extends ViewPart implements ISelectionProvider{
@@ -103,7 +106,13 @@ public class RequirementsIndicesView extends ViewPart implements ISelectionProvi
 				RequirementsView.displayString = new ArrayList<String>();
 				showMessage();
 				RequirementsView newView = new RequirementsView();
-				newView.runPlugIn();		
+				newView.runPlugIn();
+				try {
+					titleLabel.setText("Method Indices:" + (new Utility()).processRootDirectory());
+				} catch (JarException | CoreException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			}
 
 			@Override

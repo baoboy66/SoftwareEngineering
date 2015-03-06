@@ -3,7 +3,9 @@ package tracing.views;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map.Entry;
+import java.util.jar.JarException;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -30,7 +32,7 @@ public class MethodIndicesView extends ViewPart implements ISelectionProvider{
 	
 	public static Text indicesText;
 	public Utility UTL = new Utility();
-	
+	public static Label titleLabel;
 	private void testIndex(){	
 		ArrayList<String> Test = new ArrayList<String>();
 		UTL.findAllFileNames(OpeningDialog.rootFolderPath, Test);   
@@ -84,7 +86,7 @@ public class MethodIndicesView extends ViewPart implements ISelectionProvider{
 		formdata.right = new FormAttachment(0,200);
 		
 		//Create title label
-		Label titleLabel = new Label(parent,SWT.SINGLE);
+		titleLabel = new Label(parent,SWT.SINGLE);
 		titleLabel.setText("Method Indices:");
 		titleLabel.setLayoutData(formdata);
 		

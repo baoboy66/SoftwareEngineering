@@ -42,6 +42,8 @@ public class Utility {
 	 * @param filePath
 	 * @return ArrayList<String> directoryFilesMatched
 	 */
+	static HashMap<String, String> methodNames = new HashMap<String, String>();
+	
     public ArrayList<String> findFileNames(String directory){
         String regexMatchCondition = ".+\\.txt$";
         ArrayList<String> directoryFilesMatched = new ArrayList<String>();
@@ -133,7 +135,7 @@ public class Utility {
      * @param strings
      * @return
      */
-    public String convertArrayToString(String[] strings)
+    public static String convertArrayToString(String[] strings)
     {
     	if(strings.length <= 0){
     		return "";
@@ -165,7 +167,7 @@ public class Utility {
      * @param strList
      * @return tokens as string
      */
-    public String tokenizeCode(String strList){
+    public static String tokenizeCode(String strList){
     	//Split by spaces and non alpha numeric characters
     	strList = strList.trim();
 		String[] tokens = strList.split("[^a-zA-Z0-9]+");
@@ -181,7 +183,7 @@ public class Utility {
      * @param strList
      * @return processed code
      */
-    public String processCode(String originalCode){
+    public static String processCode(String originalCode){
 		originalCode = originalCode.trim();
 		String newline = "\n";
 		List<String> codeSegments = new ArrayList<String>();
@@ -404,15 +406,16 @@ public class Utility {
 					for (ICompilationUnit unit : aPackage
 							.getCompilationUnits()) {
 	
-						System.out.println("--class name: "
-								+ unit.getElementName());
-	
+						//System.out.println("--class name: "+ unit.getElementName());
 						IType[] allTypes = unit.getAllTypes();
 						for (IType type : allTypes) {
 	
 							IMethod[] methods = type.getMethods();
-	
+							
 							for (IMethod method : methods) {
+								
+								String result = processCode(method.getSource());
+								methodNames.put(method.getElementName(), result);
 								totalMethod++;
 								/*System.out.println("--Method name: "+ method.getElementName());
 								System.out.println("Signature: "+ method.getSignature());
@@ -429,6 +432,7 @@ public class Utility {
 	
 		}
 	}
+	System.out.println(methodNames.get("recordLoginFailure"));
 	return totalMethod;
 }  
     
