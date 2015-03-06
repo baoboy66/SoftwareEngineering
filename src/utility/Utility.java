@@ -5,9 +5,23 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.jar.JarException;
 
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.jdt.core.ICompilationUnit;
+import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.core.IMethod;
+import org.eclipse.jdt.core.IPackageFragment;
+import org.eclipse.jdt.core.IPackageFragmentRoot;
+import org.eclipse.jdt.core.IType;
+import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.dialogs.IOverwriteQuery;
@@ -359,5 +373,64 @@ public class Utility {
 	    catch(Exception exp){};
     }
 
+    public static int processRootDirectory() throws JarException,
+	CoreException {
+    	//IPath path = new Path("C:/iTrust");
+    	//IFile sourceFile = ResourcesPlugin.getWorkspace().getRoot().getFileForLocation(path);
+	IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
+	System.out.println("root" + root.getLocation().toOSString());
+	
+	IProject[] projects = root.getProjects();
+	if(projects.length == 0){
+		System.out.println("more than one project");
+	}
+	// process each project
+	int totalMethod = 0;
+	for (IProject project : projects) {
+		System.out.println("project name: " + project.getName());
+		
+		if (project.isNatureEnabled("org.eclipse.jdt.core.javanature")) {
+			IJavaProject javaProject = JavaCore.create(project);
+			IPackageFragment[] packages = javaProject.getPackageFragments();
+	
+			// process each package
+			for (IPackageFragment aPackage : packages) {
+	
+				// We will only look at the package from the source folder
+				// K_BINARY would include also included JARS, e.g. rt.jar
+				// only process the JAR files
+				if (aPackage.getKind() == IPackageFragmentRoot.K_SOURCE) {
+	
+					for (ICompilationUnit unit : aPackage
+							.getCompilationUnits()) {
+	
+						System.out.println("--class name: "
+								+ unit.getElementName());
+	
+						IType[] allTypes = unit.getAllTypes();
+						for (IType type : allTypes) {
+	
+							IMethod[] methods = type.getMethods();
+	
+							for (IMethod method : methods) {
+								totalMethod++;
+								/*System.out.println("--Method name: "+ method.getElementName());
+								System.out.println("Signature: "+ method.getSignature());
+								System.out.println("Return Type: "+ method.getReturnType());
+								System.out.println("source: "+ method.getSource());
+								System.out.println("to string: "+ method.toString());
+								System.out.println("new: "+ method.getPath().toString());
+							*/
+							}
+						}
+					}
+				}
+			}
+	
+		}
+	}
+	return totalMethod;
+}  
+    
 }
 
