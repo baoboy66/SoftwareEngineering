@@ -2,17 +2,14 @@ package utility;
 
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.jar.JarException;
 
-import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.ICompilationUnit;
@@ -42,7 +39,7 @@ public class Utility {
 	 * @param filePath
 	 * @return ArrayList<String> directoryFilesMatched
 	 */
-	static HashMap<String, String> methodNames = new HashMap<String, String>();
+	public static HashMap<String, String> methodNames = new HashMap<String, String>();
 	
     public ArrayList<String> findFileNames(String directory){
         String regexMatchCondition = ".+\\.txt$";
@@ -432,9 +429,8 @@ public class Utility {
 	
 		}
 	}
-	System.out.println(methodNames.get("recordLoginFailure"));
+	//System.out.println(methodNames.get("recordLoginFailure"));
 	return totalMethod;
 }  
-    
 }
 

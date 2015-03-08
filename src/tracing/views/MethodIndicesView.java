@@ -33,21 +33,6 @@ public class MethodIndicesView extends ViewPart implements ISelectionProvider{
 	public static Text indicesText;
 	public Utility UTL = new Utility();
 	public static Label titleLabel;
-	private void testIndex(){	
-		ArrayList<String> Test = new ArrayList<String>();
-		UTL.findAllFileNames(OpeningDialog.rootFolderPath, Test);   
-		HashMap<String, String> originalContents = new HashMap<String, String>();
-        for (String test: Test){
-        	System.out.println(test);
-        	originalContents.put(test.substring(test.lastIndexOf("/") + 1, test.lastIndexOf(".")),
-        							 UTL.readSelectedFile(null,test));
-        }
-        
-        for (Entry<String, String> testAll : originalContents.entrySet()){
-        	System.out.println(testAll.getKey());
-        	System.out.println(testAll.getValue());
-        }
-	}
 	
 	@Override
 	public void addSelectionChangedListener(ISelectionChangedListener listener) {
@@ -101,7 +86,7 @@ public class MethodIndicesView extends ViewPart implements ISelectionProvider{
 		indicesText.setLayoutData(formdata);
 		
 		Button manageButton = new Button(parent,SWT.PUSH);
-		manageButton.setText("TEST");
+		manageButton.setText("Start Indexing");
 		formdata = new FormData();
 		formdata.top = new FormAttachment(indicesText,10);
 		formdata.left = new FormAttachment(10,10);
@@ -111,7 +96,12 @@ public class MethodIndicesView extends ViewPart implements ISelectionProvider{
 
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				testIndex();		
+				try {
+					MethodIndicesView.titleLabel.setText("Method Indices:" + Utility.processRootDirectory());
+				} catch (JarException | CoreException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			}
 
 			@Override
