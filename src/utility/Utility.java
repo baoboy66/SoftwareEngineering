@@ -165,13 +165,14 @@ public class Utility {
      * @return tokens as string
      */
     public static String tokenizeCode(String strList){
-    	//Split by spaces and non alpha numeric characters
-    	strList = strList.trim();
+		strList = strList.trim();
+		
+		//Remove underscores _
+		strList = strList.replace("_", "");
+		
 		String[] tokens = strList.split("[^a-zA-Z0-9]+");
-		//Split by camel case
 		strList = convertArrayToString(tokens);
 		tokens = strList.split("(?<=[a-z])(?=[A-Z])|(?<=[A-Z])(?=[A-Z][a-z])");
-		//Return all tokens as string
 		return convertArrayToString(tokens);
 	}
 	
@@ -182,19 +183,24 @@ public class Utility {
      */
     public static String processCode(String originalCode){
 		originalCode = originalCode.trim();
-		String newline = "\n";
+		originalCode = originalCode.replaceAll("(\\r|\\n|\\r\\n)+", "\n");
+		String newline = "baocooperdavidmatt";
+		originalCode = originalCode.replaceAll("(\\n)+", newline + " ");
 		List<String> codeSegments = new ArrayList<String>();
+		boolean quoteFix = false;
 		
 		while(true){
 			int singlePosition = originalCode.indexOf("//", 0);
 			int multiPosition = originalCode.indexOf("/*", 0);
 			int commentPosition = -1;
 			String endCommentString = "";
+			boolean commentOrNewLine = false;
 			
 			if(singlePosition != -1 && (singlePosition < multiPosition || multiPosition == -1)){
 				//A single line comment is being processed
 				commentPosition = singlePosition;
 				endCommentString = newline;
+				commentOrNewLine = true;
 			}
 			else if(multiPosition != -1 && (multiPosition < singlePosition  || singlePosition == -1)){
 				//A multi line comment is being processed
@@ -213,12 +219,16 @@ public class Utility {
 			    if(originalCode.charAt(i) == '"')
 			    	countDouble++;
 			}
+			if(quoteFix) countDouble++;
+			
 			if(countDouble % 2 != 0){
 				codeSegments.add(tokenizeCode(originalCode.substring(0, commentPosition)));
 				originalCode = originalCode.substring(commentPosition + 2);
-				
+				quoteFix = true;
 				//Comments within quotes are not actually comments
 				continue;
+			}else{
+				quoteFix = false;
 			}
 			
 			//Tokenize words before the comment starts
@@ -232,8 +242,10 @@ public class Utility {
 				codeSegments.add(originalCode.substring(0));
 				break;
 			}
-			codeSegments.add(originalCode.substring(0, endOfComment + 2));
-			originalCode = originalCode.substring(endOfComment + 2);
+			int endLength = 2;
+			if(commentOrNewLine) endLength = newline.length();
+			codeSegments.add(originalCode.substring(0, endOfComment + endLength));
+			originalCode = originalCode.substring(endOfComment + endLength);
 			
 			if(originalCode.length() <= 0){
 				break;
@@ -241,7 +253,7 @@ public class Utility {
 		}
 		
 		String[] stringArray = codeSegments.toArray(new String[codeSegments.size()]);
-		return convertArrayToString(stringArray);
+		return convertArrayToString(stringArray).replaceAll(newline, "\n");
 	}
     
     
