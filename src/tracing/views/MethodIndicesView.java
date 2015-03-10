@@ -21,6 +21,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
+
 import utility.Utility;
 
 public class MethodIndicesView extends ViewPart implements ISelectionProvider{
@@ -78,13 +79,18 @@ public class MethodIndicesView extends ViewPart implements ISelectionProvider{
 		formdata.left = new FormAttachment(0,10);
 		formdata.right = new FormAttachment(0,800);
 		indicesText.setLayoutData(formdata);
+		long startTime = System.currentTimeMillis();
 		UTL.openProject();
+		int methodCount = 0;
 		try {
-			MethodIndicesView.titleLabel.setText("Method Indices:" + Utility.processRootDirectory());
+			methodCount = Utility.processRootDirectory();
 		} catch (JarException | CoreException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		long finishTime = System.currentTimeMillis() - startTime;
+		MethodIndicesView.titleLabel.setText("Indexing time of " + methodCount + " methods is " + finishTime/1000 + " seconds.");
+		
 		doubleClickOnMethod();
 	}
 
@@ -103,7 +109,7 @@ public class MethodIndicesView extends ViewPart implements ISelectionProvider{
                         if(element instanceof IMethod)
                         {
                             IMethod method = ((IMethod) element);
-                            indicesText.setText(
+                            indicesText.setText("Method Name: " + method.getElementName() + " \n \n " +
                             Utility.methodNames.get(method.getKey()));
                         }                      
                     }
