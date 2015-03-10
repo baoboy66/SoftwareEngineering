@@ -1,11 +1,6 @@
 package tracing.views;
 
 import java.util.ArrayList;
-import java.util.jar.JarException;
-
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jface.viewers.DoubleClickEvent;
-import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
@@ -20,14 +15,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.navigator.CommonNavigator;
-import org.eclipse.ui.navigator.CommonViewer;
-import org.eclipse.ui.navigator.resources.ProjectExplorer;
 import org.eclipse.ui.part.ViewPart;
-import org.eclipse.swt.widgets.*;
-
-import utility.Utility;
 import dialogView.OpeningDialog;
 
 public class RequirementsIndicesView extends ViewPart implements ISelectionProvider{
@@ -68,25 +56,7 @@ public class RequirementsIndicesView extends ViewPart implements ISelectionProvi
 	
 		showMessage();
 
-		CommonNavigator nav = (CommonNavigator)PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
-				.findView(ProjectExplorer.VIEW_ID);
-		CommonViewer viewer = nav.getCommonViewer();
-		viewer. addDoubleClickListener(new IDoubleClickListener() {
-		    @Override
-		    public void doubleClick(DoubleClickEvent event) {
-		    	System.out.println("Got a Double Click Event!");
-		    	try{
-			        final TreeItem item = viewer.getTree().getSelection()[0];
-			        String selectedMethod = item.getText().substring(0, item.getText().indexOf("("));
-			        System.out.println(selectedMethod);
-			    	MethodIndicesView.indicesText.setText(
-			    			Utility.methodNames.get(selectedMethod));
-		    	} catch (Exception exp) {
-		    		System.out.println(exp.getMessage());
-		    	}
-		    }
-		});
-		
+
 		
 		//Set layout forum of parent composite
 		parent.setLayout(new FormLayout());

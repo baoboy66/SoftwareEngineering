@@ -125,15 +125,28 @@ public class UtilityTest {
             String actual = utl.tokenizeCode(a);
             assertEquals(expected, actual);
     }
+    @Test
+    public void testCamelCaseTokenizeCode5() {
+            String b = "ALLCAP";          
+            String actual = utl.tokenizeCode(b);
+            assertEquals(b, actual);
+    }
    
     @Test
     public void testUnderScoreTokenizeCode4() {
             String a = "DB_Exception";
-            String expected = "DBException";
+            String expected = "DB Exception";
             String actual = utl.tokenizeCode(a);
             assertEquals(expected, actual);
     }
-   
+    @Test
+    public void testUnderScoreTokenizeCode6() {
+            String a = "bd_exception";
+            String expected = "bd exception";
+            String actual = utl.tokenizeCode(a);
+            assertEquals(expected, actual);
+    }
+    
     @Test
     public void testProcessCode() {
             String a = "CamelCase Test This is a MethodToTest(String myString)";
@@ -144,8 +157,8 @@ public class UtilityTest {
    
     @Test
     public void testProcessCode3() {
-            //String a = utl.readSelectedFile("C:/Users/User/workspace/Lab2_SE/src/utility/Utility.java", null);
-            String a = utl.readSelectedFile(null, "/Users/lxdavidxl/Downloads/iTrust/src/edu/ncsu/csc/itrust/EmailUtil.java");
+            String a = utl.readSelectedFile(null,"C:/Users/User/workspace/Lab2_SE/src/utility/Utility.java");
+            //String a = utl.readSelectedFile(null, "/Users/lxdavidxl/Downloads/iTrust/src/edu/ncsu/csc/itrust/EmailUtil.java");
             String expected = "/*test this*/";
             String actual = utl.processCode(a);
             System.out.println("Expected: " +expected);

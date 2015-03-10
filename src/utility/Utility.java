@@ -24,9 +24,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.dialogs.IOverwriteQuery;
 import org.eclipse.ui.wizards.datatransfer.FileSystemStructureProvider;
 import org.eclipse.ui.wizards.datatransfer.ImportOperation;
-
 import IRUtilities.Porter;
-import dialogView.OpeningDialog;
 
 public class Utility {
 
@@ -168,7 +166,7 @@ public class Utility {
 		strList = strList.trim();
 		
 		//Remove underscores _
-		strList = strList.replace("_", "");
+		//strList = strList.replace("_", "");
 		
 		String[] tokens = strList.split("[^a-zA-Z0-9]+");
 		strList = convertArrayToString(tokens);
@@ -386,19 +384,12 @@ public class Utility {
 
     public static int processRootDirectory() throws JarException,
 	CoreException {
-    	//IPath path = new Path("C:/iTrust");
-    	//IFile sourceFile = ResourcesPlugin.getWorkspace().getRoot().getFileForLocation(path);
 	IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-	System.out.println("root" + root.getLocation().toOSString());
 	
 	IProject[] projects = root.getProjects();
-	if(projects.length == 0){
-		System.out.println("more than one project");
-	}
 	// process each project
 	int totalMethod = 0;
 	for (IProject project : projects) {
-		System.out.println("project name: " + project.getName());
 		
 		if (project.isNatureEnabled("org.eclipse.jdt.core.javanature")) {
 			IJavaProject javaProject = JavaCore.create(project);
@@ -414,8 +405,6 @@ public class Utility {
 	
 					for (ICompilationUnit unit : aPackage
 							.getCompilationUnits()) {
-	
-						//System.out.println("--class name: "+ unit.getElementName());
 						IType[] allTypes = unit.getAllTypes();
 						for (IType type : allTypes) {
 	
@@ -424,15 +413,8 @@ public class Utility {
 							for (IMethod method : methods) {
 								
 								String result = processCode(method.getSource());
-								methodNames.put(method.getElementName(), result);
+								methodNames.put(method.getKey(), result);
 								totalMethod++;
-								/*System.out.println("--Method name: "+ method.getElementName());
-								System.out.println("Signature: "+ method.getSignature());
-								System.out.println("Return Type: "+ method.getReturnType());
-								System.out.println("source: "+ method.getSource());
-								System.out.println("to string: "+ method.toString());
-								System.out.println("new: "+ method.getPath().toString());
-							*/
 							}
 						}
 					}
@@ -441,7 +423,6 @@ public class Utility {
 	
 		}
 	}
-	//System.out.println(methodNames.get("recordLoginFailure"));
 	return totalMethod;
 }  
 }
