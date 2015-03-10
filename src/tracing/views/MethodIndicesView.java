@@ -63,7 +63,7 @@ public class MethodIndicesView extends ViewPart implements ISelectionProvider{
 		FormData formdata = new FormData();
 		formdata.top=new FormAttachment(0,5);
 		formdata.left = new FormAttachment(0,10);
-		formdata.right = new FormAttachment(0,200);
+		formdata.right = new FormAttachment(0,300);
 		
 		//Create title label
 		titleLabel = new Label(parent,SWT.SINGLE);
