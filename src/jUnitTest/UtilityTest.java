@@ -3,8 +3,6 @@ package jUnitTest;
 import static org.junit.Assert.*;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.HashMap;
 import org.junit.Test;
 
 import utility.Utility;
@@ -146,23 +144,5 @@ public class UtilityTest {
             String actual = utl.tokenizeCode(a);
             assertEquals(expected, actual);
     }
-    
-    @Test
-    public void testProcessCode() {
-            String a = "CamelCase Test This is a MethodToTest(String myString)";
-            String expected = "Camel Case Test This is a Method To Test String my String";
-            String actual = utl.processCode(a);
-            assertEquals(expected, actual);
-    }
-   
-    @Test
-    public void testProcessCode3() {
-            String a = utl.readSelectedFile(null,"C:/Users/User/workspace/Lab2_SE/src/utility/Utility.java");
-            //String a = utl.readSelectedFile(null, "/Users/lxdavidxl/Downloads/iTrust/src/edu/ncsu/csc/itrust/EmailUtil.java");
-            String expected = "/*test this*/";
-            String actual = utl.processCode(a);
-            System.out.println("Expected: " +expected);
-            System.out.println("Actual: " +actual);
-            //assertEquals(expected, actual);
-    }
+
 }
