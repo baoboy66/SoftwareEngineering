@@ -38,8 +38,8 @@ public class RequirementsView extends ViewPart implements ISelectionProvider{
 	private ISelection selection;
 	public static ComboViewer comboViewer;
 	public static Combo combo;
-	public Utility UTL = new Utility(); 
-	public static Text text;
+	public Utility utl = new Utility(); 
+	public static Text requirementViewText;
 	public static ArrayList<String> displayString = new ArrayList<String>();
 	public static boolean isView = false;
 	/**
@@ -60,46 +60,46 @@ public class RequirementsView extends ViewPart implements ISelectionProvider{
 		long startTime = System.currentTimeMillis();
 		
 		// Call the findFileName method and assign the result to the combo viewer.
-        ArrayList<String> directoryFiles = UTL.findFileNames(OpeningDialog.rootFolderPath);
+        ArrayList<String> directoryFiles = utl.findFileNames(OpeningDialog.rootFolderPath);
         for(String itr: directoryFiles){
         	String result = "";
             combo.add(itr);
-            String file = UTL.readSelectedFile(OpeningDialog.rootFolderPath,itr);
-            String tokens = UTL.tokenize(file);
+            String file = utl.readSelectedFile(OpeningDialog.rootFolderPath,itr);
+            String tokens = utl.tokenize(file);
             if (OpeningDialog.isTokenizing) {
             	result = tokens;	
             }
         	if(OpeningDialog.isRestoringAcronyms){       		
         		tokens = result.isEmpty() ? tokens : result;     		
-        		result = UTL.restoringAcronyms(tokens, OpeningDialog.restoringAcronymsFile);
+        		result = utl.restoringAcronyms(tokens, OpeningDialog.restoringAcronymsFile);
         	} 
         	if(OpeningDialog.isRemovingStopWords){
         		tokens = result.isEmpty() ? tokens : result;    		
-        		result = UTL.removeStopWords(tokens, OpeningDialog.removingStopWordsFile);
+        		result = utl.removeStopWords(tokens, OpeningDialog.removingStopWordsFile);
         	}
         	if(OpeningDialog.isStemming){
                 tokens = result.isEmpty() ? tokens : result;
-               	result = UTL.getStems(tokens);
+               	result = utl.getStems(tokens);
         	}
         	// print the original content if no feature is selected
         	if(!(OpeningDialog.isRemovingStopWords || OpeningDialog.isRestoringAcronyms || OpeningDialog.isTokenizing || OpeningDialog.isStemming)) result = file;
         	displayString.add(result);
-        	UTL.storeStringIntoFiles(OpeningDialog.rootFolderPath, itr, result);
+        	utl.storeStringIntoFiles(OpeningDialog.rootFolderPath, itr, result);
         }
         long finishTime = System.currentTimeMillis();
-        UTL.getIndexingString(startTime,finishTime,directoryFiles.size());
+        utl.getIndexingString(startTime,finishTime,directoryFiles.size());
 
         
         // Set the default to index 0 of the drop down.
 		combo.select(0);
-		text.setText(UTL.getIndexingString(startTime,finishTime,directoryFiles.size()));
+		requirementViewText.setText(utl.getIndexingString(startTime,finishTime,directoryFiles.size()));
 		combo.addSelectionListener(new SelectionListener(){
 
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 		        
 				if(combo.getSelectionIndex()==0){
-					text.setText(UTL.getIndexingString(startTime,finishTime,directoryFiles.size()));
+					requirementViewText.setText(utl.getIndexingString(startTime,finishTime,directoryFiles.size()));
 					RequirementsIndicesView.indicesText.setText("This is a sample result.");
 				}
 				else
@@ -107,17 +107,17 @@ public class RequirementsView extends ViewPart implements ISelectionProvider{
 					// If the file is empty, unreadable, or there is an error we will default to
 					// a blank panel after catching the exception.
 					try{
-						text.setText("");
+						requirementViewText.setText("");
 						// The '-1' is needed in the call below becasue the first index of the dropdown
 						// is set by default causing an offset of 1.
 						int index = combo.getSelectionIndex() -1;
-						String fileStream = UTL.readSelectedFile(OpeningDialog.rootFolderPath, directoryFiles.get(index));
-						text.setText(fileStream);
+						String fileStream = utl.readSelectedFile(OpeningDialog.rootFolderPath, directoryFiles.get(index));
+						requirementViewText.setText(fileStream);
 						RequirementsIndicesView.indicesText.setText(displayString.get(index));
 					}
 					catch(Exception exp2){
 						// Set the text panel to blank when an exception is encountered.
-						text.setText("");
+						requirementViewText.setText("");
 					}
 			}
 
@@ -151,7 +151,7 @@ public class RequirementsView extends ViewPart implements ISelectionProvider{
 		//Create a drop box
 		comboViewer = new ComboViewer(parent,SWT.NONE|SWT.DROP_DOWN);
 		combo = comboViewer.getCombo();
-		text = new Text(parent,SWT.MULTI|SWT.V_SCROLL|SWT.READ_ONLY);
+		requirementViewText = new Text(parent,SWT.MULTI|SWT.V_SCROLL|SWT.READ_ONLY);
 		if( !OpeningDialog.rootFolderPath.isEmpty()) runPlugIn();
 		
 		//Set combo position
@@ -168,7 +168,7 @@ public class RequirementsView extends ViewPart implements ISelectionProvider{
 		formdata.bottom = new FormAttachment(combo,600);
 		formdata.left = new FormAttachment(0,5);
 		formdata.right = new FormAttachment(0,355);
-		text.setLayoutData(formdata);			
+		requirementViewText.setLayoutData(formdata);			
 	}
 	
 	@Override
