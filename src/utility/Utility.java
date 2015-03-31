@@ -74,7 +74,7 @@ public class Utility {
      */
     public String readSelectedFile(String filePath ,String filename){
         File openingDirectory = new File(filePath + "/" + filename + ".txt");
-        if (filePath == null) {openingDirectory = new File(filename);}
+        if (filePath.isEmpty()) {openingDirectory = new File(filename);}
         String fileContents = "";
         try {
                     BufferedReader fileStream = new BufferedReader(new FileReader(openingDirectory));
@@ -87,7 +87,7 @@ public class Utility {
                     return fileContents;
                 } catch (Exception e) {
                         System.err.printf("File: %s is corrupted or empty.", filename);
-                        return null;
+                        return "";
                 }
     }
     /***
@@ -214,7 +214,7 @@ public class Utility {
      * @return
      */
     public String removeStopWords(String data, String filePath){
-    	String[] stopWords = tokenize(readSelectedFile(null, filePath)).split(" ");
+    	String[] stopWords = tokenize(readSelectedFile("", filePath)).split(" ");
     	String[] strings = data.split(" ");
     	ArrayList<String> result = new ArrayList<String>();
         for (int i=0 ; i < strings.length; i++){
