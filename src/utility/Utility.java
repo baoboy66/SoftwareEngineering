@@ -45,23 +45,6 @@ public class Utility {
         return directoryFilesMatched;
     }
     
-    public void findAllFileNames(String directory, ArrayList<String> listIn){
-    	String regexExtensionMatch = ".+\\.java";
-        File directoryObj =  new File(directory);
-        File[] filesFound = directoryObj.listFiles();
-        
-        for (File out : filesFound){
-        	if(out.isDirectory()){
-        		findAllFileNames(out.toString(), listIn);
-        	}
-        	else if(out.toString().matches(regexExtensionMatch)){
-        		String filename = out.toString();
-        		//listIn.add(filename.substring(filename.lastIndexOf("/") + 1, filename.lastIndexOf(".")));
-        		listIn.add(filename);
-        	}
-        }
-    }
-    
     /**
      * This function takes the name of the file that is selected from the ComboViewer[Dropdown],
      * adds the file path and extension to it in order to create a file object. Then the file is
