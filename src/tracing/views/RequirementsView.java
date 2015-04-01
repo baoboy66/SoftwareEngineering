@@ -36,12 +36,12 @@ import utility.Utility;
 public class RequirementsView extends ViewPart implements ISelectionProvider{
 	
 	private ISelection selection;
-	public static ComboViewer comboViewer;
-	public static Combo combo;
-	public Utility utl = new Utility(); 
-	public static Text requirementViewText;
-	public static ArrayList<String> displayString = new ArrayList<String>();
-	public static boolean isView = false;
+	private static ComboViewer comboViewer;
+	private static Combo combo;
+	private Utility utl = new Utility(); 
+	private static Text requirementViewText;
+	private static ArrayList<String> displayString = new ArrayList<String>();
+	private static boolean isView = false;
 	/**
 	 * The ID of the view as specified by the extension.
 	 */
@@ -60,31 +60,31 @@ public class RequirementsView extends ViewPart implements ISelectionProvider{
 		long startTime = System.currentTimeMillis();
 		
 		// Call the findFileName method and assign the result to the combo viewer.
-        ArrayList<String> directoryFiles = utl.findFileNames(OpeningDialog.rootFolderPath);
+        ArrayList<String> directoryFiles = utl.findFileNames(OpeningDialog.getRootFolderPath());
         for(String itr: directoryFiles){
         	String result = "";
             combo.add(itr);
-            String file = utl.readSelectedFile(OpeningDialog.rootFolderPath,itr);
+            String file = utl.readSelectedFile(OpeningDialog.getRootFolderPath(),itr);
             String tokens = utl.tokenize(file);
-            if (OpeningDialog.isTokenizing) {
+            if (OpeningDialog.getIsTokenizing()) {
             	result = tokens;	
             }
-        	if(OpeningDialog.isRestoringAcronyms){       		
+        	if(OpeningDialog.getIsRestoringAcronyms()){       		
         		tokens = result.isEmpty() ? tokens : result;     		
-        		result = utl.restoringAcronyms(tokens, OpeningDialog.restoringAcronymsFile);
+        		result = utl.restoringAcronyms(tokens, OpeningDialog.getRestoringAcronymsFile());
         	} 
-        	if(OpeningDialog.isRemovingStopWords){
+        	if(OpeningDialog.getIsRemovingStopWords()){
         		tokens = result.isEmpty() ? tokens : result;    		
-        		result = utl.removeStopWords(tokens, OpeningDialog.removingStopWordsFile);
+        		result = utl.removeStopWords(tokens, OpeningDialog.getRemovingStopWordsFile());
         	}
-        	if(OpeningDialog.isStemming){
+        	if(OpeningDialog.getIsStemming()){
                 tokens = result.isEmpty() ? tokens : result;
                	result = utl.getStems(tokens);
         	}
         	// print the original content if no feature is selected
-        	if(!(OpeningDialog.isRemovingStopWords || OpeningDialog.isRestoringAcronyms || OpeningDialog.isTokenizing || OpeningDialog.isStemming)) result = file;
+        	if(!(OpeningDialog.getIsRemovingStopWords() || OpeningDialog.getIsRestoringAcronyms() || OpeningDialog.getIsTokenizing() || OpeningDialog.getIsStemming())) result = file;
         	displayString.add(result);
-        	utl.storeStringIntoFiles(OpeningDialog.rootFolderPath, itr, result);
+        	utl.storeStringIntoFiles(OpeningDialog.getRootFolderPath(), itr, result);
         }
         long finishTime = System.currentTimeMillis();
         utl.getIndexingString(startTime,finishTime,directoryFiles.size());
@@ -100,7 +100,7 @@ public class RequirementsView extends ViewPart implements ISelectionProvider{
 		        
 				if(combo.getSelectionIndex()==0){
 					requirementViewText.setText(utl.getIndexingString(startTime,finishTime,directoryFiles.size()));
-					RequirementsIndicesView.indicesText.setText("This is a sample result.");
+					RequirementsIndicesView.setIndicesText("This is a sample result.");
 				}
 				else
 					// Try to set the text panel to the raw contents of the selected text file.
@@ -111,9 +111,9 @@ public class RequirementsView extends ViewPart implements ISelectionProvider{
 						// The '-1' is needed in the call below becasue the first index of the dropdown
 						// is set by default causing an offset of 1.
 						int index = combo.getSelectionIndex() -1;
-						String fileStream = utl.readSelectedFile(OpeningDialog.rootFolderPath, directoryFiles.get(index));
+						String fileStream = utl.readSelectedFile(OpeningDialog.getRootFolderPath(), directoryFiles.get(index));
 						requirementViewText.setText(fileStream);
-						RequirementsIndicesView.indicesText.setText(displayString.get(index));
+						RequirementsIndicesView.setIndicesText(displayString.get(index));
 					}
 					catch(Exception exp2){
 						// Set the text panel to blank when an exception is encountered.
@@ -152,7 +152,7 @@ public class RequirementsView extends ViewPart implements ISelectionProvider{
 		comboViewer = new ComboViewer(parent,SWT.NONE|SWT.DROP_DOWN);
 		combo = comboViewer.getCombo();
 		requirementViewText = new Text(parent,SWT.MULTI|SWT.V_SCROLL|SWT.READ_ONLY);
-		if( !OpeningDialog.rootFolderPath.isEmpty()) runPlugIn();
+		if( !OpeningDialog.getRootFolderPath().isEmpty()) runPlugIn();
 		
 		//Set combo position
 		FormData formdata = new FormData();
@@ -202,4 +202,7 @@ public class RequirementsView extends ViewPart implements ISelectionProvider{
 		// TODO Auto-generated method stub
 		
 	}
+        public static boolean getIsView(){
+                return isView;
+        }
 }

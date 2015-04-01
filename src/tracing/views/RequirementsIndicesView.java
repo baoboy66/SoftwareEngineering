@@ -20,7 +20,7 @@ import dialogView.OpeningDialog;
 
 public class RequirementsIndicesView extends ViewPart implements ISelectionProvider{
 	
-	public static Text indicesText;
+	private static Text indicesText;
 	private void showMessage(){	
 		OpeningDialog openDialog = new OpeningDialog(new Shell(), SWT.BORDER | SWT.WRAP);
 		openDialog.open();
@@ -92,12 +92,11 @@ public class RequirementsIndicesView extends ViewPart implements ISelectionProvi
 
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				OpeningDialog.isRestoringAcronyms = false;
-				OpeningDialog.isRemovingStopWords = false;
-				OpeningDialog.isStemming = false;
-				OpeningDialog.isTokenizing = false;
+				OpeningDialog.setIsRestoringAcronyms(false);
+				OpeningDialog.setIsRemovingStopWords(false);
+				OpeningDialog.setIsStemming(false);
+				OpeningDialog.setIsTokenizing(false);
 				indicesText.setText("");
-				RequirementsView.displayString = new ArrayList<String>();
 				showMessage();
 				RequirementsView newView = new RequirementsView();
 				newView.runPlugIn();
@@ -118,5 +117,9 @@ public class RequirementsIndicesView extends ViewPart implements ISelectionProvi
 		// TODO Auto-generated method stub
 		
 	}
+        public static void setIndicesText(String input){
+                indicesText.setText(input);
+        }
+
 
 }

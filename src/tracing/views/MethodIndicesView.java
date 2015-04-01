@@ -44,9 +44,9 @@ import utility.Utility;
 
 public class MethodIndicesView extends ViewPart implements ISelectionProvider{
 	
-	public static Text indicesText;
-	public static Label titleLabel;
-	public static HashMap<String, String> methodNames = new HashMap<String, String>();
+	private static Text indicesText;
+	private static Label titleLabel;
+	private static HashMap<String, String> methodNames = new HashMap<String, String>();
 	@Override
 	public void addSelectionChangedListener(ISelectionChangedListener listener) {
 		// TODO Auto-generated method stub
@@ -278,6 +278,7 @@ public class MethodIndicesView extends ViewPart implements ISelectionProvider{
 		}
 	}
 	return totalMethod;
-}  
+    }
+
 
 }

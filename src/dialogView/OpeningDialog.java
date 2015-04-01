@@ -24,13 +24,13 @@ public class OpeningDialog extends Dialog {
 	private Text textRestoreAcronyms;
 	private Text txtRemoveStopWords;
 	
-	public static boolean isTokenizing = false;
-	public static boolean isRestoringAcronyms = false;
-	public static boolean isRemovingStopWords = false;
-	public static boolean isStemming = false;
-	public static String rootFolderPath = "";
-	public static String restoringAcronymsFile;
-	public static String removingStopWordsFile;
+        private static boolean isTokenizing = false;
+        private static boolean isRestoringAcronyms = false;
+        private static boolean isRemovingStopWords = false;
+        private static boolean isStemming = false;
+        private static String rootFolderPath = "";
+        private static String restoringAcronymsFile;
+        private static String removingStopWordsFile;
 	/**
 	 * Create the dialog.
 	 * @param parent
@@ -231,7 +231,7 @@ public class OpeningDialog extends Dialog {
 				if(validInput)
 				{
 					shell.close();
-					if(RequirementsView.isView){
+					if(RequirementsView.getIsView()){
 						RequirementsView newView = new RequirementsView();
 						newView.runPlugIn();
 					}
@@ -263,4 +263,37 @@ public class OpeningDialog extends Dialog {
 		 }
 		 return false;
 	 }
+        public static boolean getIsTokenizing(){
+                return isTokenizing;
+        }
+        public static void setIsTokenizing(boolean isToken){
+                isTokenizing = isToken;
+        }
+        public static boolean getIsRestoringAcronyms(){
+                return isRestoringAcronyms;
+        }
+        public static void setIsRestoringAcronyms(boolean isRestoring){
+                isRestoringAcronyms = isRestoring;
+        }
+        public static boolean getIsRemovingStopWords(){
+                return isRemovingStopWords;
+        }
+        public static void setIsRemovingStopWords(boolean isRemoving){
+                isRemovingStopWords = isRemoving;
+        }
+        public static boolean getIsStemming(){
+                return isStemming;
+        }
+        public static void setIsStemming(boolean isStem){
+                isStemming = isStem;
+        }
+        public static String getRootFolderPath(){
+                return rootFolderPath;
+        }
+        public static String getRestoringAcronymsFile(){
+                return restoringAcronymsFile;
+        }
+        public static String getRemovingStopWordsFile(){
+                return removingStopWordsFile;
+        }
 }
