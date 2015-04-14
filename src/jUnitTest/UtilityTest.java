@@ -95,7 +95,7 @@ public class UtilityTest {
 		} finally {
 		   try {writer.close();} catch (Exception ex) {}
 		}
-		String readTest = utl.readSelectedFile(".", "test");
+		String readTest = utl.readSelectedFile(".", "test", "txt");
 		assertEquals("Something to test LCHP +++ hopefully it passes!!![]]]}{", readTest);
 		fileObj.delete();
 	}

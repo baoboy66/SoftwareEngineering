@@ -215,8 +215,8 @@ public class MethodIndicesView extends ViewPart implements ISelectionProvider{
 				break;
 			}
 		}
-		
-		String[] stringArray = codeSegments.toArray(new String[codeSegments.size()]);
+		String[] segmentsSize = new String[codeSegments.size()];
+		String[] stringArray = codeSegments.toArray(segmentsSize);
 		return Utility.convertArrayToString(stringArray).replaceAll(newline, "\n");
 	}
     
@@ -226,12 +226,13 @@ public class MethodIndicesView extends ViewPart implements ISelectionProvider{
 	    };
 	
 	    String baseDir = "C:\\iTrust";
+	    File fileDir = new File(baseDir);
 	    Path path = new Path(baseDir);
 	    ImportOperation importOperation = new ImportOperation(path,
-	            new File(baseDir), FileSystemStructureProvider.INSTANCE, overwriteQuery);
+	            fileDir, FileSystemStructureProvider.INSTANCE, overwriteQuery);
 	    importOperation.setCreateContainerStructure(false);
 	    try{
-	    importOperation.run(new NullProgressMonitor());
+	    	importOperation.run(new NullProgressMonitor());
 	    }
 	    catch(Exception exp){};
     }
@@ -257,8 +258,7 @@ public class MethodIndicesView extends ViewPart implements ISelectionProvider{
 				// only process the JAR files
 				if (aPackage.getKind() == IPackageFragmentRoot.K_SOURCE) {
 	
-					for (ICompilationUnit unit : aPackage
-							.getCompilationUnits()) {
+					for (ICompilationUnit unit : aPackage.getCompilationUnits()) {
 						IType[] allTypes = unit.getAllTypes();
 						for (IType type : allTypes) {
 	

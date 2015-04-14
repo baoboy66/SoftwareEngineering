@@ -19,8 +19,8 @@ public class Utility {
 	 * @return ArrayList<String> directoryFilesMatched
 	 */
 	
-    public ArrayList<String> findFileNames(String directory){
-        String regexMatchCondition = ".+\\.txt$";
+    public ArrayList<String> findFileNames(String directory, String extension){
+        String regexMatchCondition = ".+\\." + extension + "$";
         ArrayList<String> directoryFilesMatched = new ArrayList<String>();
         File directoryObj =  new File(directory);
 
@@ -55,23 +55,25 @@ public class Utility {
      * @return fileContents: Array if successful
      * 		   null: if exception is thrown
      */
-    public String readSelectedFile(String filePath ,String filename){
-        File openingDirectory = new File(filePath + "/" + filename + ".txt");
-        if (filePath.isEmpty()) {openingDirectory = new File(filename);}
+    public String readSelectedFile(String filePath ,String filename, String type){
+        File openingDirectory = new File(filePath + "/" + filename + "." + type);
+        if (filePath.isEmpty() || type.isEmpty()) {openingDirectory = new File(filename);}
         String fileContents = "";
+        
         try {
-                    BufferedReader fileStream = new BufferedReader(new FileReader(openingDirectory));
-                    int charRead;
-                    while ((charRead = fileStream.read()) != -1)
-                    {
-                      fileContents += (char)charRead;
-                    }
-                    fileStream.close();
-                    return fileContents;
-                } catch (Exception e) {
-                        System.err.printf("File: %s is corrupted or empty.", filename);
-                        return "";
-                }
+            BufferedReader fileStream = new BufferedReader(new FileReader(openingDirectory));
+            int charRead;
+            while ((charRead = fileStream.read()) != -1)
+            {
+            	fileContents += (char)charRead;
+            }
+            fileStream.close();
+            return fileContents;
+            
+         } catch (Exception e) {
+        	 System.err.printf("File: %s is corrupted or empty.", filename);
+             return "";
+         }
     }
     /***
      * This function takes in the time when the program starts, the time when the program finishes,
@@ -150,7 +152,8 @@ public class Utility {
     	HashMap<String, String> dictionary = new HashMap<String,String>();
         File openingDirectory = new File(filePath);
         try {
-            BufferedReader fileStream = new BufferedReader(new FileReader(openingDirectory));
+        	FileReader reader = new FileReader(openingDirectory);
+            BufferedReader fileStream = new BufferedReader(reader);
             String lineRead;
             while ((lineRead = fileStream.readLine()) != null)
             {
@@ -197,7 +200,7 @@ public class Utility {
      * @return
      */
     public String removeStopWords(String data, String filePath){
-    	String[] stopWords = tokenize(readSelectedFile("", filePath)).split(" ");
+    	String[] stopWords = tokenize(readSelectedFile("", filePath, "txt")).split(" ");
     	String[] strings = data.split(" ");
     	ArrayList<String> result = new ArrayList<String>();
         for (int i=0 ; i < strings.length; i++){

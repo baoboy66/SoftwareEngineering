@@ -60,11 +60,12 @@ public class RequirementsView extends ViewPart implements ISelectionProvider{
 		long startTime = System.currentTimeMillis();
 		
 		// Call the findFileName method and assign the result to the combo viewer.
-        ArrayList<String> directoryFiles = utl.findFileNames(OpeningDialog.getRootFolderPath());
+		String ext = "txt"; 
+        ArrayList<String> directoryFiles = utl.findFileNames(OpeningDialog.getRootFolderPath(), ext);
         for(String itr: directoryFiles){
         	String result = "";
             combo.add(itr);
-            String file = utl.readSelectedFile(OpeningDialog.getRootFolderPath(),itr);
+            String file = utl.readSelectedFile(OpeningDialog.getRootFolderPath(),itr, ext);
             String tokens = utl.tokenize(file);
             if (OpeningDialog.getIsTokenizing()) {
             	result = tokens;	
@@ -111,7 +112,7 @@ public class RequirementsView extends ViewPart implements ISelectionProvider{
 						// The '-1' is needed in the call below becasue the first index of the dropdown
 						// is set by default causing an offset of 1.
 						int index = combo.getSelectionIndex() -1;
-						String fileStream = utl.readSelectedFile(OpeningDialog.getRootFolderPath(), directoryFiles.get(index));
+						String fileStream = utl.readSelectedFile(OpeningDialog.getRootFolderPath(), directoryFiles.get(index), ext);
 						requirementViewText.setText(fileStream);
 						RequirementsIndicesView.setIndicesText(displayString.get(index));
 					}
