@@ -20,8 +20,11 @@ public class Utility {
 	 */
 	
     public ArrayList<String> findFileNames(String directory, String extension){
+    	ArrayList<String> directoryFilesMatched = new ArrayList<String>();
+    	if(directory == "" || directory == null){
+    		return directoryFilesMatched;
+    	}
         String regexMatchCondition = ".+\\." + extension + "$";
-        ArrayList<String> directoryFilesMatched = new ArrayList<String>();
         File directoryObj =  new File(directory);
 
         if (directoryObj.exists() && directoryObj.isDirectory()){
@@ -56,6 +59,9 @@ public class Utility {
      * 		   null: if exception is thrown
      */
     public String readSelectedFile(String filePath ,String filename, String type){
+    	if(filePath == "" || filePath == null || filename == "" || filename == null){
+    		return "";
+    	}
         File openingDirectory = new File(filePath + "/" + filename + "." + type);
         if (filePath.isEmpty() || type.isEmpty()) {openingDirectory = new File(filename);}
         String fileContents = "";
@@ -85,6 +91,9 @@ public class Utility {
      * @return
      */
     public String getIndexingString(long startTime, long finishTime, int fileCount){
+    	if(startTime < 0 || finishTime < startTime || fileCount < 0){
+    		return "";
+    	}
         String secondsPassed = Long.toString((finishTime-startTime));
         return "Indexing time of " + fileCount + " requirements is: " + secondsPassed + " milliseconds";
     }
@@ -201,6 +210,9 @@ public class Utility {
      */
     public String removeStopWords(String data, String filePath){
     	String[] stopWords = tokenize(readSelectedFile("", filePath, "txt")).split(" ");
+    	if(stopWords == null){
+    		return data;
+    	}
     	String[] strings = data.split(" ");
     	ArrayList<String> result = new ArrayList<String>();
         for (int i=0 ; i < strings.length; i++){

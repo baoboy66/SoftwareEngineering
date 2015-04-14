@@ -152,21 +152,22 @@ public class MethodIndicesView extends ViewPart implements ISelectionProvider{
 		originalCode = originalCode.replaceAll("(\\n)+", newline + " ");
 		List<String> codeSegments = new ArrayList<String>();
 		boolean quoteFix = false;
+		final int POSITION_NOT_FOUND = -1;
 		
 		while(true){
 			int singlePosition = originalCode.indexOf("//", 0);
 			int multiPosition = originalCode.indexOf("/*", 0);
-			int commentPosition = -1;
+			int commentPosition = POSITION_NOT_FOUND;
 			String endCommentString = "";
 			boolean commentOrNewLine = false;
 			
-			if(singlePosition != -1 && (singlePosition < multiPosition || multiPosition == -1)){
+			if(singlePosition != POSITION_NOT_FOUND && (singlePosition < multiPosition || multiPosition == POSITION_NOT_FOUND)){
 				//A single line comment is being processed
 				commentPosition = singlePosition;
 				endCommentString = newline;
 				commentOrNewLine = true;
 			}
-			else if(multiPosition != -1 && (multiPosition < singlePosition  || singlePosition == -1)){
+			else if(multiPosition != POSITION_NOT_FOUND && (multiPosition < singlePosition  || singlePosition == POSITION_NOT_FOUND)){
 				//A multi line comment is being processed
 				commentPosition = multiPosition;
 				endCommentString = "*/";
@@ -201,7 +202,7 @@ public class MethodIndicesView extends ViewPart implements ISelectionProvider{
 			
 			//Ignore everything within a comment
 			int endOfComment = originalCode.indexOf(endCommentString, 0);
-			if(endOfComment == -1){
+			if(endOfComment == POSITION_NOT_FOUND){
 				//The rest of the file is a comment
 				codeSegments.add(originalCode.substring(0));
 				break;
