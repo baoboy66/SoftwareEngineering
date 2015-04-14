@@ -71,7 +71,7 @@ public class RequirementsView extends ViewPart implements ISelectionProvider{
             }
         	if(OpeningDialog.getIsRestoringAcronyms()){       		
         		tokens = result.isEmpty() ? tokens : result;     		
-        		result = utl.restoringAcronyms(tokens, OpeningDialog.getRestoringAcronymsFile());
+        		result = utl.restoreAcronyms(tokens, OpeningDialog.getRestoringAcronymsFile());
         	} 
         	if(OpeningDialog.getIsRemovingStopWords()){
         		tokens = result.isEmpty() ? tokens : result;    		
@@ -174,7 +174,6 @@ public class RequirementsView extends ViewPart implements ISelectionProvider{
 	@Override
 	public void setSelection(ISelection selection) {
 		this.selection = selection;
-		SelectionChangedEvent event = new SelectionChangedEvent(comboViewer,selection);
 	}
 
 	/**

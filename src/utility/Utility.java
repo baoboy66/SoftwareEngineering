@@ -174,7 +174,7 @@ public class Utility {
      * @param restoringAcronymsFile
      * @return
      */
-    public String restoringAcronyms(String data, String restoringAcronymsFile ){
+    public String restoreAcronyms(String data, String restoringAcronymsFile ){
     	HashMap<String,String>  dictionary = getAcronymsList(restoringAcronymsFile);
     	if(dictionary.isEmpty()){
     		return "";
